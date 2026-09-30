@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Round 3 – Troubleshooting</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #f1f5f9;
+    line-height: 1.6;
+    text-align: center;
+  }
+  header {
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 30px;
+    color: #fff;
+  }
+  #lotSelection, #game {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    background: rgba(30,41,59,0.95);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+  }
+  #lotSelection h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #38bdf8;
+  }
+  .lotBtn, .options button, #nextBtn, #showResultBtn, #backBtn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 17px;
+    transition: all 0.3s ease;
+    margin: 5px;
+  }
+  .lotBtn {
+    background: #3b82f6;
+    color: #fff;
+  }
+  .lotBtn:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+  }
+  .lotBtn.selected {
+    background: #22c55e !important;
+    transform: scale(1.1);
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  .options button {
+    background: #475569;
+    color: #f1f5f9;
+  }
+  .options button:hover {
+    background: #64748b;
+    transform: scale(1.03);
+  }
+  #nextBtn {
+    background: #22c55e;
+    color: #fff;
+    display: none;
+    margin-top: 20px;
+  }
+  #showResultBtn {
+    background: #f97316;
+    color: #fff;
+    display: none;
+    margin-top: 15px;
+  }
+  #backBtn {
+    background: #ef4444;
+    color: #fff;
+    margin-top: 20px;
+  }
+  #status {
+    margin-top: 18px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  #progress {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #facc15;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛠 Round 3: Troubleshooting Challenge</h1>
+</header>
+
+<div id="lotSelection">
+  <h2>Select Your Lot</h2>
+  <div id="lotButtons"></div>
+</div>
+
+<div id="game" style="display:none;">
+  <div id="progress"></div>
+  <div id="questionBox" class="question"></div>
+  <div id="options" class="options"></div>
+  <div id="status"></div>
+  <button id="showResultBtn" onclick="showResult()">Show Result</button>
+  <button id="nextBtn" onclick="nextQuestion()">Next</button>
+  <br>
+  <button id="backBtn" onclick="backToLot()">Back to Lot Selection</button>
+</div>
+
+<script>
+  // --- 20 Questions ---
+  const questions = [
+    { q:"PC powers on, fans spin, but nothing shows on monitor.", options:["Loose RAM","Faulty PSU","Wrong cable","Bad SSD"], answer:"Loose RAM" },
+    { q:"System shuts down while gaming.", options:["Overheating GPU","Insufficient PSU","Faulty monitor","Slow HDD"], answer:"Insufficient PSU" },
+    { q:"Random freezes and restarts even when temps normal.", options:["Corrupt drivers","Bad RAM","Too much storage","No antivirus"], answer:"Bad RAM" },
+    { q:"Build won't POST; motherboard LED shows CPU error.", options:["Faulty CPU","Loose CPU power cable","Bad RAM","Old GPU"], answer:"Loose CPU power cable" },
+    { q:"Windows installer doesn't detect NVMe SSD.", options:["Loose SSD","Wrong SATA mode","Insufficient PSU","No internet"], answer:"Loose SSD" },
+    { q:"GPU artifacts while gaming (weird textures, lines).", options:["Overheating GPU","Faulty VRAM","Low RAM","Wrong refresh rate"], answer:"Faulty VRAM" },
+    { q:"High disk latency and low throughput despite SSD.", options:["TRIM disabled","Bad SATA cable","Overclocked CPU","Big monitor"], answer:"TRIM disabled" },
+    { q:"USB devices disconnect randomly.", options:["Faulty USB header","PSU sag","Loose SATA","Bad GPU"], answer:"Faulty USB header" },
+    { q:"System boots to BIOS but Windows fails with BSOD.", options:["Corrupt bootloader","Low RAM","Broken CPU fan","No boot device"], answer:"Corrupt bootloader" },
+    { q:"Temperatures spike; fans don't ramp up.", options:["Fan curve wrong","Dust clog","Faulty sensor","SSD failure"], answer:"Fan curve wrong" },
+    { q:"Bluetooth audio stutters but Wi-Fi is fine.", options:["2.4GHz interference","Bad PSU","Low RAM","Faulty SSD"], answer:"2.4GHz interference" },
+    { q:"New GPU causes POST VGA error.", options:["BIOS update needed","Dead GPU","Loose power cable","Old monitor"], answer:"BIOS update needed" },
+    { q:"PC beeps continuously on startup.", options:["RAM missing","Bad PSU","GPU dead","No SSD"], answer:"RAM missing" },
+    { q:"System boots very slow despite SSD.", options:["TRIM disabled","Faulty RAM","Old monitor","Wrong cable"], answer:"TRIM disabled" },
+    { q:"Monitor says 'No Signal' but GPU fans spin.", options:["Cable in motherboard port","Dead GPU","Wrong refresh rate","PSU fault"], answer:"Cable in motherboard port" },
+    { q:"PC overheats even after thermal paste applied.", options:["Cooler not mounted","Old GPU","Too much RAM","Slow SSD"], answer:"Cooler not mounted" },
+    { q:"Ethernet not working but Wi-Fi works.", options:["Disabled LAN driver","Bad PSU","Low RAM","SSD issue"], answer:"Disabled LAN driver" },
+    { q:"RGB lights on but no boot.", options:["Faulty motherboard","Faulty SSD","Bad GPU","Overheating"], answer:"Faulty motherboard" },
+    { q:"GPU fan 100% but no display.", options:["Not seated in PCIe","Low RAM","Faulty monitor","Bad PSU"], answer:"Not seated in PCIe" },
+    { q:"PC reboots when many USB devices connected.", options:["PSU overload","Bad RAM","SSD failure","Wrong driver"], answer:"PSU overload" }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+  let selectedChoice = null;
+  const questionsPerLot = 2; // example: 2 questions per lot
+  let lastSelectedLot = null;
+
+  // --- Generate lot buttons dynamically ---
+  const lotButtonsDiv = document.getElementById("lotButtons");
+  for(let i=1; i<=10; i++){
+    const btn = document.createElement("button");
+    btn.textContent = "Lot " + i;
+    btn.className = "lotBtn";
+    btn.onclick = () => startLot(i, btn); // pass button to highlight
+    lotButtonsDiv.appendChild(btn);
+  }
+
+  function startLot(lotNumber, btn) {
+    // Highlight selected lot
+    if(lastSelectedLot) lastSelectedLot.classList.remove("selected");
+    btn.classList.add("selected");
+    lastSelectedLot = btn;
+
+    // Start the lot
+    currentIndex = (lotNumber - 1) * questionsPerLot;
+    score = 0;
+    document.getElementById("lotSelection").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    const q = questions[currentIndex];
+    document.getElementById("questionBox").textContent = q.q;
+    document.getElementById("progress").textContent = `Question ${currentIndex+1} / ${questions.length}`;
+    const optDiv = document.getElementById("options");
+    optDiv.innerHTML = "";
+    q.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.onclick = () => checkAnswer(opt);
+      optDiv.appendChild(btn);
+    });
+    document.getElementById("status").textContent = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("showResultBtn").style.display = "none";
+    selectedChoice = null;
+  }
+
+  function checkAnswer(choice) {
+    selectedChoice = choice;
+    document.getElementById("status").textContent = "🗣 Explain your answer to staff before revealing result!";
+    Array.from(document.querySelectorAll(".options button")).forEach(b => b.disabled = true);
+    document.getElementById("showResultBtn").style.display = "inline-block";
+  }
+
+  function showResult() {
+    const q = questions[currentIndex];
+    if (selectedChoice === q.answer) {
+      document.getElementById("status").textContent = "✅ Correct!";
+      score++;
+    } else {
+      document.getElementById("status").textContent = `❌ Wrong! Correct answer: ${q.answer}`;
+    }
+    document.getElementById("showResultBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "inline-block";
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex >= questions.length) {
+      document.getElementById("game").innerHTML = `<h2>🎉 Round Finished</h2>
+        <p>Your final score: <b>${score} / ${questions.length}</b></p>
+        <button onclick="backToLot()" id="backBtn">Back to Lot Selection</button>`;
+    } else {
+      loadQuestion();
+    }
+  }
+
+  function backToLot() {
+    document.getElementById("game").style.display = "none";
+    document.getElementById("lotSelection").style.display = "block";
+  }
+</script>
+</body>
+</html>

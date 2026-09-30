@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Builder Challenge</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 1rem;
+    }
+    .event-card {
+      background: rgba(30,41,59,0.9);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      max-width: 950px;
+      width: 100%;
+      padding: 2rem 2.5rem;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 { font-weight: 700; color: #0dcaf0; }
+    .form-select { border-radius: 0.75rem; padding: 0.9rem; }
+    .btn-custom {
+      font-size: 1.1rem;
+      padding: 0.9rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-custom:hover { transform: scale(1.03); }
+    #result-section {
+      background: rgba(15,23,42,0.85);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    #timer { font-size: 1.2rem; font-weight: bold; color: #ffc107; margin-bottom: 1rem; text-align: center; }
+    label.form-label { margin-bottom: 0.5rem; display: block; }
+  </style>
+</head>
+<body>
+
+<div class="event-card">
+  <div class="text-center mb-4">
+    <h1>💻 PC Builder Event</h1>
+    <p class="lead">Select components for your PC based on the category.  
+    You have <span class="text-warning">50 seconds</span> to finish your build!</p>
+  </div>
+
+  <!-- Timer -->
+  <div id="timer" class="d-none">⏳ Time Left: <span id="time-left">50</span>s</div>
+
+  <!-- Category Selector -->
+  <div class="mb-4">
+    <label for="category" class="form-label fw-bold">Select PC Category:</label>
+    <select id="category" class="form-select">
+      <option value="">-- Choose Category --</option>
+      <option value="entry">Entry-Level PC - ₹30,000</option>
+      <option value="entryPlus">Entry-Level Plus - ₹35,000</option>
+      <option value="normal">Normal PC - ₹50,000</option>
+      <option value="normalPlus">Normal Plus - ₹60,000</option>
+      <option value="advanced">Advanced Normal PC - ₹75,000</option>
+      <option value="gaming">Gaming PC - ₹1,00,000</option>
+      <option value="highGaming">High Gaming PC - ₹1,20,000</option>
+      <option value="gamingPlus">Gaming Plus - ₹1,30,000</option>
+      <option value="workstation">Workstation - ₹1,50,000</option>
+      <option value="workstationPlus">Workstation Plus - ₹1,80,000</option>
+      <option value="highEndWorkstation">High-End Workstation - ₹2,00,000</option>
+    </select>
+  </div>
+
+  <!-- Components Section -->
+  <div id="components-section" class="d-none">
+    <h4 class="mb-3">🖥️ Choose Components:</h4>
+    <div class="row g-3" id="components-container">
+      <div class="col-md-6"><label class="form-label">🖥️ CPU:</label><select class="form-select"><option value="">--Select CPU--</option><option>Intel i3</option><option>Intel i5</option><option>Intel i7</option><option>Intel i9</option><option>AMD Ryzen 3</option><option>AMD Ryzen 5</option><option>AMD Ryzen 7</option></select></div>
+      <div class="col-md-6"><label class="form-label">🎮 GPU:</label><select class="form-select"><option value="">--Select GPU--</option><option>NVIDIA GTX 1650</option><option>NVIDIA GTX 1660 Super</option><option>NVIDIA RTX 3060</option><option>NVIDIA RTX 3070</option><option>NVIDIA RTX 4070</option><option>AMD Radeon RX 6600</option><option>AMD Radeon RX 6800</option></select></div>
+      <div class="col-md-6"><label class="form-label">💾 RAM:</label><select class="form-select"><option value="">--Select RAM--</option><option>8GB DDR4</option><option>16GB DDR4</option><option>32GB DDR4</option><option>64GB DDR5</option></select></div>
+      <div class="col-md-6"><label class="form-label">📦 Storage:</label><select class="form-select"><option value="">--Select Storage--</option><option>256GB SSD</option><option>512GB SSD</option><option>1TB SSD</option><option>2TB HDD</option></select></div>
+      <div class="col-md-6"><label class="form-label">🔧 Motherboard:</label><select class="form-select"><option value="">--Select Motherboard--</option><option>Intel B460</option><option>Intel Z490</option><option>AMD B550</option><option>AMD X570</option></select></div>
+      <div class="col-md-6"><label class="form-label">⚡ PSU:</label><select class="form-select"><option value="">--Select PSU--</option><option>450W Bronze</option><option>550W Bronze</option><option>650W Gold</option><option>750W Platinum</option></select></div>
+      <div class="col-md-6"><label class="form-label">🖥️ Cabinet:</label><select class="form-select"><option value="">--Select Cabinet--</option><option>Mid Tower</option><option>Full Tower</option><option>Mini Tower</option><option>RGB Gaming Cabinet</option></select></div>
+      <div class="col-md-6"><label class="form-label">🖥️ Monitor:</label><select class="form-select"><option value="">--Select Monitor--</option><option>21.5" Full HD</option><option>24" Full HD</option><option>27" QHD</option><option>32" 4K</option><option>144Hz Gaming Monitor</option></select></div>
+      <div class="col-md-6"><label class="form-label">⌨️ Keyboard:</label><select class="form-select"><option value="">--Select Keyboard--</option><option>Basic Keyboard</option><option>Mechanical Keyboard</option><option>RGB Gaming Keyboard</option></select></div>
+      <div class="col-md-6"><label class="form-label">🖱️ Mouse:</label><select class="form-select"><option value="">--Select Mouse--</option><option>Basic Mouse</option><option>Wireless Mouse</option><option>Gaming Mouse</option><option>RGB Gaming Mouse</option></select></div>
+      <div class="col-md-6"><label class="form-label">🎧 Headset:</label><select class="form-select"><option value="">--Select Headset--</option><option>Basic Headset</option><option>Noise Cancelling Headset</option><option>Gaming Headset</option></select></div>
+      <div class="col-md-6"><label class="form-label">💿 OS:</label><select class="form-select"><option value="">--Select OS--</option><option>Windows 10 Home</option><option>Windows 11 Pro</option><option>Linux Ubuntu</option><option>No OS</option></select></div>
+    </div>
+    <button id="submitBtn" class="btn btn-success btn-custom w-100 mt-4">🚀 Submit Build</button>
+  </div>
+
+  <!-- Result Section -->
+  <div id="result-section" class="d-none">
+    <h4>📊 Results:</h4>
+    <p><strong>Selected Category:</strong> <span id="result-category"></span></p>
+    <p><strong>Budget:</strong> ₹<span id="result-budget"></span></p>
+    <p><strong>Score:</strong> <span id="score-percentage"></span>%</p>
+    <div id="result-container"></div>
+    <!-- ✅ Back Button -->
+  <button id="backBtn" class="btn btn-warning btn-custom w-100 mt-3">🔙 Back to Category</button>
+
+  </div>
+</div>
+
+<script>
+const category = document.getElementById("category");
+const componentsSection = document.getElementById("components-section");
+const submitBtn = document.getElementById("submitBtn");
+const resultSection = document.getElementById("result-section");
+const resultCategory = document.getElementById("result-category");
+const resultBudget = document.getElementById("result-budget");
+const resultContainer = document.getElementById("result-container");
+const timer = document.getElementById("timer");
+const timeLeft = document.getElementById("time-left");
+
+let countdown;
+let budgetMap = {
+  entry: 30000, entryPlus: 35000, normal: 50000, normalPlus: 60000,
+  advanced: 75000, gaming: 100000, highGaming: 120000, gamingPlus: 130000,
+  workstation: 150000, workstationPlus: 180000, highEndWorkstation: 200000
+};
+
+// ✅ Answer key for all components
+let answers = {
+  entry: {
+    CPU: "Intel i3", GPU: "NVIDIA GTX 1650", RAM: "8GB DDR4", Storage: "256GB SSD",
+    Motherboard: "Intel B460", PSU: "450W Bronze", Cabinet: "Mid Tower", Monitor: "21.5\" Full HD",
+    Keyboard: "Basic Keyboard", Mouse: "Basic Mouse", Headset: "Basic Headset", OS: "Windows 10 Home"
+  },
+  entryPlus: {
+    CPU: "Intel i5", GPU: "NVIDIA GTX 1660 Super", RAM: "16GB DDR4", Storage: "512GB SSD",
+    Motherboard: "Intel Z490", PSU: "550W Bronze", Cabinet: "Mid Tower", Monitor: "24\" Full HD",
+    Keyboard: "Mechanical Keyboard", Mouse: "Wireless Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  },
+  normal: {
+    CPU: "Intel i5", GPU: "NVIDIA RTX 3060", RAM: "16GB DDR4", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "650W Gold", Cabinet: "Full Tower", Monitor: "27\" QHD",
+    Keyboard: "Mechanical Keyboard", Mouse: "Gaming Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  },
+  normalPlus: {
+    CPU: "Intel i7", GPU: "NVIDIA RTX 3060", RAM: "32GB DDR4", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "650W Gold", Cabinet: "Full Tower", Monitor: "27\" QHD",
+    Keyboard: "Mechanical Keyboard", Mouse: "Gaming Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  },
+  advanced: {
+    CPU: "Intel i7", GPU: "NVIDIA RTX 3070", RAM: "32GB DDR4", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "RGB Gaming Cabinet", Monitor: "32\" 4K",
+    Keyboard: "RGB Gaming Keyboard", Mouse: "RGB Gaming Mouse", Headset: "Gaming Headset", OS: "Windows 11 Pro"
+  },
+  gaming: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 4070", RAM: "32GB DDR4", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "RGB Gaming Cabinet", Monitor: "144Hz Gaming Monitor",
+    Keyboard: "RGB Gaming Keyboard", Mouse: "RGB Gaming Mouse", Headset: "Gaming Headset", OS: "Windows 11 Pro"
+  },
+  highGaming: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 4070", RAM: "64GB DDR5", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "RGB Gaming Cabinet", Monitor: "144Hz Gaming Monitor",
+    Keyboard: "RGB Gaming Keyboard", Mouse: "RGB Gaming Mouse", Headset: "Gaming Headset", OS: "Windows 11 Pro"
+  },
+  gamingPlus: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 4070", RAM: "64GB DDR5", Storage: "2TB HDD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "RGB Gaming Cabinet", Monitor: "144Hz Gaming Monitor",
+    Keyboard: "RGB Gaming Keyboard", Mouse: "RGB Gaming Mouse", Headset: "Gaming Headset", OS: "Windows 11 Pro"
+  },
+  workstation: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 3070", RAM: "64GB DDR5", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "Full Tower", Monitor: "32\" 4K",
+    Keyboard: "Mechanical Keyboard", Mouse: "Gaming Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  },
+  workstationPlus: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 4070", RAM: "64GB DDR5", Storage: "1TB SSD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "Full Tower", Monitor: "32\" 4K",
+    Keyboard: "Mechanical Keyboard", Mouse: "Gaming Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  },
+  highEndWorkstation: {
+    CPU: "Intel i9", GPU: "NVIDIA RTX 4070", RAM: "64GB DDR5", Storage: "2TB HDD",
+    Motherboard: "Intel Z490", PSU: "750W Platinum", Cabinet: "Full Tower", Monitor: "32\" 4K",
+    Keyboard: "Mechanical Keyboard", Mouse: "Gaming Mouse", Headset: "Noise Cancelling Headset", OS: "Windows 11 Pro"
+  }
+};
+
+// Timer
+category.addEventListener("change", () => {
+  if(category.value){
+    componentsSection.classList.remove("d-none");
+    timer.classList.remove("d-none");
+    startTimer(50);
+  } else {
+    componentsSection.classList.add("d-none");
+    timer.classList.add("d-none");
+  }
+});
+
+function startTimer(seconds){
+  clearInterval(countdown);
+  let time = seconds;
+  timeLeft.textContent = time;
+  countdown = setInterval(()=>{
+    time--;
+    timeLeft.textContent = time;
+    if(time <= 0){
+      clearInterval(countdown);
+      showResults();
+    }
+  }, 1000);
+}
+
+// Submit
+submitBtn.addEventListener("click", ()=>{ clearInterval(countdown); showResults(); });
+
+function showResults(){
+  componentsSection.classList.add("d-none");
+  timer.classList.add("d-none");
+  resultSection.classList.remove("d-none");
+
+  resultCategory.textContent = category.options[category.selectedIndex].text;
+  resultBudget.textContent = budgetMap[category.value] || "N/A";
+
+  let selects = document.querySelectorAll("#components-container select");
+  let correct = answers[category.value];
+  let score = 0;
+  let total = selects.length;
+  let html = "<ul>";
+
+  selects.forEach(sel => {
+    let compName = sel.previousElementSibling.innerText.replace(":", "");
+    let userChoice = sel.value;
+    let correctChoice = correct[compName];
+    if(userChoice === correctChoice){
+      html += `<li><strong>${compName}:</strong> ${userChoice} ✅</li>`;
+      score++;
+    } else {
+      html += `<li><strong>${compName}:</strong> ${userChoice || "Not Selected"} ❌ (Correct: ${correctChoice})</li>`;
+    }
+  });
+  html += "</ul>";
+  resultContainer.innerHTML = html;
+  document.getElementById("score-percentage").textContent = ((score/total)*100).toFixed(2);
+}
+// Back button functionality
+const backBtn = document.getElementById("backBtn");
+backBtn.addEventListener("click", () => {
+  resultSection.classList.add("d-none");   // hide results
+  componentsSection.classList.add("d-none"); // hide components
+  timer.classList.add("d-none");           // hide timer
+  category.value = "";                     // reset dropdown
+});
+
+
+</script>
+</body>
+</html>

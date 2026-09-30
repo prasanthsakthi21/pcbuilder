@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Round 1: PC Assembly</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1, h2 {
+      color: #38bdf8;
+    }
+    .scenarios {
+      margin-bottom: 15px;
+    }
+    button {
+      background: #06b6d4;
+      border: none;
+      padding: 8px 12px;
+      margin: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #fff;
+    }
+    button:hover {
+      background: #0891b2;
+    }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 20px;
+    }
+    .components {
+      width: 55%;
+      max-height: 550px;
+      padding: 10px;
+      background: #111827;
+      border-radius: 10px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .category {
+      margin-bottom: 20px;
+    }
+    .category h3 {
+      margin-bottom: 10px;
+      color: #facc15;
+      font-size: 18px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .component {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .component:hover {
+      border: 2px solid #38bdf8;
+      transform: scale(1.05);
+    }
+    .component img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 8px;
+    }
+    .component p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .slots {
+      width: 40%;
+      padding: 15px;
+      background: #111827;
+      border-radius: 10px;
+    }
+    .slot {
+      margin: 12px;
+      padding: 12px;
+      background: #1e293b;
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      min-height: 80px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .highlight {
+      border: 2px solid #38bdf8;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    #scenarioDetails {
+      margin:20px auto;
+      padding:15px;
+      background:#1e293b;
+      border-radius:8px;
+      text-align:left;
+      max-width:800px;
+    }
+    #scenarioDetails ul {
+      margin:0;
+      padding-left:20px;
+    }
+    #scenarioDetails li {
+      margin:4px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Round 1: PC Assembly</h1>
+  <h2>Choose or Get Random Scenario</h2>
+  <div class="scenarios">
+    <button onclick="loadScenario('1')">Scenario 1</button>
+    <button onclick="loadScenario('2')">Scenario 2</button>
+    <button onclick="loadScenario('3')">Scenario 3</button>
+    <button onclick="loadScenario('4')">Scenario 4</button>
+    <button onclick="loadScenario('5')">Scenario 5</button>
+    <button onclick="loadScenario('6')">Scenario 6</button>
+    <button onclick="loadScenario('7')">Scenario 7</button>
+    <button onclick="loadScenario('8')">Scenario 8</button>
+    <button onclick="loadScenario('9')">Scenario 9</button>
+    <button onclick="loadScenario('10')">Scenario 10</button>
+    <button onclick="randomScenario()">🎲 Get Random</button>
+  </div>
+
+  <div id="scenarioDetails">
+    <h2>📋 Scenario Details</h2>
+    <p>Select a scenario to see the requirements.</p>
+  </div>
+
+  <div class="container">
+    <div class="components" id="components">
+      <h2>Components</h2>
+      <!-- Components load here -->
+    </div>
+    <div class="slots" id="slots">
+      <h2>PC Slots</h2>
+      <div class="slot" data-type="CPU">CPU Slot</div>
+      <div class="slot" data-type="GPU">GPU Slot</div>
+      <div class="slot" data-type="RAM">RAM Slot</div>
+      <div class="slot" data-type="Storage">Storage Slot</div>
+      <div class="slot" data-type="PSU">PSU Slot</div>
+      <div class="slot" data-type="Motherboard">Motherboard Slot</div>
+    </div>
+  </div>
+
+  <button onclick="checkBuild()">✅ Check Build</button>
+  <div id="result"></div>
+
+  <script>
+    // 10 scenarios
+    const scenarios = {
+      "1": {name: "Entry Gaming", description:"A low-budget gaming PC for 1080p gaming.", requirements:{CPU:"Intel i5", GPU:"GTX 1660", RAM:"16GB DDR4", Storage:"512GB SSD", PSU:"550W", Motherboard:"B560 DDR4"}},
+      "2": {name: "Ultra 4K Gaming", description:"High-end build for 4K ultra gaming.", requirements:{CPU:"Intel i9", GPU:"RTX 4090", RAM:"32GB DDR5", Storage:"1TB SSD", PSU:"850W", Motherboard:"Z790 DDR5"}},
+      "3": {name: "Budget Office", description:"Low-cost PC for office tasks.", requirements:{CPU:"Intel i3", GPU:"Integrated Graphics", RAM:"8GB DDR4", Storage:"256GB SSD", PSU:"400W", Motherboard:"H510 DDR4"}},
+      "4": {name: "Programming PC", description:"Optimized for coding and development.", requirements:{CPU:"Ryzen 5", GPU:"Integrated Graphics", RAM:"16GB DDR4", Storage:"512GB SSD", PSU:"500W", Motherboard:"B450 DDR4"}},
+      "5": {name: "Video Editing", description:"From low budget to high-end video editing rig.", requirements:{CPU:"Ryzen 9", GPU:"RTX 3080", RAM:"64GB DDR5", Storage:"2TB SSD", PSU:"1000W", Motherboard:"X670 DDR5"}},
+      "6": {name: "AI/Machine Learning", description:"Workstation for ML workloads.", requirements:{CPU:"Intel Xeon", GPU:"RTX A6000", RAM:"128GB DDR5", Storage:"2TB SSD", PSU:"1200W", Motherboard:"WS C621"}},
+      "7": {name: "Streaming Rig", description:"Balanced PC for streaming + gaming.", requirements:{CPU:"Ryzen 7", GPU:"RTX 3070", RAM:"32GB DDR4", Storage:"1TB SSD", PSU:"750W", Motherboard:"X570 DDR4"}},
+      "8": {name: "Small Form Factor", description:"Compact PC for portability.", requirements:{CPU:"Intel i7", GPU:"RTX 3060", RAM:"16GB DDR5", Storage:"1TB SSD", PSU:"650W SFX", Motherboard:"Z690 ITX"}},
+      "9": {name: "Silent PC", description:"Quiet operation for office/home use.", requirements:{CPU:"Intel i5", GPU:"GTX 1650 Low Profile", RAM:"16GB DDR4", Storage:"1TB HDD", PSU:"500W Silent", Motherboard:"B560 DDR4"}},
+      "10": {name: "Enthusiast Build", description:"Extreme build for enthusiasts.", requirements:{CPU:"Threadripper", GPU:"RTX 4090", RAM:"128GB DDR5", Storage:"4TB SSD", PSU:"1600W", Motherboard:"TRX40"}}
+    };
+
+    // Components data
+    const componentsByCategory = {
+      CPU: [
+        {name:"Intel i3",img:"https://via.placeholder.com/60?text=Intel+i3"},
+        {name:"Intel i5",img:"https://via.placeholder.com/60?text=Intel+i5"},
+        {name:"Intel i7",img:"https://via.placeholder.com/60?text=Intel+i7"},
+        {name:"Intel i9",img:"https://via.placeholder.com/60?text=Intel+i9"},
+        {name:"Ryzen 5",img:"https://via.placeholder.com/60?text=Ryzen+5"},
+        {name:"Ryzen 7",img:"https://via.placeholder.com/60?text=Ryzen+7"},
+        {name:"Ryzen 9",img:"https://via.placeholder.com/60?text=Ryzen+9"},
+        {name:"Threadripper",img:"https://via.placeholder.com/60?text=TR"},
+        {name:"Intel Xeon",img:"https://via.placeholder.com/60?text=Xeon"}
+      ],
+      GPU: [
+        {name:"Integrated Graphics",img:"https://via.placeholder.com/60?text=iGPU"},
+        {name:"GTX 1650 Low Profile",img:"https://via.placeholder.com/60?text=GTX+1650"},
+        {name:"GTX 1660",img:"https://via.placeholder.com/60?text=GTX+1660"},
+        {name:"RTX 3060",img:"https://via.placeholder.com/60?text=RTX+3060"},
+        {name:"RTX 3070",img:"https://via.placeholder.com/60?text=RTX+3070"},
+        {name:"RTX 3080",img:"https://via.placeholder.com/60?text=RTX+3080"},
+        {name:"RTX 4090",img:"https://via.placeholder.com/60?text=RTX+4090"},
+        {name:"RTX A6000",img:"https://via.placeholder.com/60?text=A6000"}
+      ],
+      RAM: [
+        {name:"8GB DDR4",img:"https://via.placeholder.com/60?text=8GB+DDR4"},
+        {name:"16GB DDR4",img:"https://via.placeholder.com/60?text=16GB+DDR4"},
+        {name:"32GB DDR4",img:"https://via.placeholder.com/60?text=32GB+DDR4"},
+        {name:"16GB DDR5",img:"https://via.placeholder.com/60?text=16GB+DDR5"},
+        {name:"32GB DDR5",img:"https://via.placeholder.com/60?text=32GB+DDR5"},
+        {name:"64GB DDR5",img:"https://via.placeholder.com/60?text=64GB+DDR5"},
+        {name:"128GB DDR5",img:"https://via.placeholder.com/60?text=128GB+DDR5"}
+      ],
+      Storage: [
+        {name:"256GB SSD",img:"https://via.placeholder.com/60?text=256GB+SSD"},
+        {name:"512GB SSD",img:"https://via.placeholder.com/60?text=512GB+SSD"},
+        {name:"1TB SSD",img:"https://via.placeholder.com/60?text=1TB+SSD"},
+        {name:"2TB SSD",img:"https://via.placeholder.com/60?text=2TB+SSD"},
+        {name:"4TB SSD",img:"https://via.placeholder.com/60?text=4TB+SSD"},
+        {name:"1TB HDD",img:"https://via.placeholder.com/60?text=1TB+HDD"}
+      ],
+      PSU: [
+        {name:"400W",img:"https://via.placeholder.com/60?text=400W"},
+        {name:"500W",img:"https://via.placeholder.com/60?text=500W"},
+        {name:"500W Silent",img:"https://via.placeholder.com/60?text=500W+Silent"},
+        {name:"550W",img:"https://via.placeholder.com/60?text=550W"},
+        {name:"650W SFX",img:"https://via.placeholder.com/60?text=650W+SFX"},
+        {name:"750W",img:"https://via.placeholder.com/60?text=750W"},
+        {name:"850W",img:"https://via.placeholder.com/60?text=850W"},
+        {name:"1000W",img:"https://via.placeholder.com/60?text=1000W"},
+        {name:"1200W",img:"https://via.placeholder.com/60?text=1200W"},
+        {name:"1600W",img:"https://via.placeholder.com/60?text=1600W"}
+      ],
+      Motherboard: [
+        {name:"H510 DDR4",img:"https://via.placeholder.com/60?text=H510"},
+        {name:"B450 DDR4",img:"https://via.placeholder.com/60?text=B450"},
+        {name:"B560 DDR4",img:"https://via.placeholder.com/60?text=B560"},
+        {name:"X570 DDR4",img:"https://via.placeholder.com/60?text=X570"},
+        {name:"Z690 ITX",img:"https://via.placeholder.com/60?text=Z690+ITX"},
+        {name:"Z790 DDR5",img:"https://via.placeholder.com/60?text=Z790+DDR5"},
+        {name:"X670 DDR5",img:"https://via.placeholder.com/60?text=X670+DDR5"},
+        {name:"WS C621",img:"https://via.placeholder.com/60?text=WS+C621"},
+        {name:"TRX40",img:"https://via.placeholder.com/60?text=TRX40"}
+      ]
+    };
+
+    let currentScenario = null;
+
+    function loadScenario(key) {
+      currentScenario = scenarios[key];
+      const compDiv = document.getElementById("components");
+      compDiv.innerHTML = "<h2>Components</h2>";
+
+      // show scenario details
+      const details = document.getElementById("scenarioDetails");
+      let reqs = "";
+      for (const [part, need] of Object.entries(currentScenario.requirements)) {
+        const available = componentsByCategory[part]?.some(c => c.name === need);
+        reqs += `<li><strong>${part}:</strong> ${need} ${available?"":"<span style='color:red'>(not in list)</span>"}</li>`;
+      }
+      details.innerHTML = `
+        <h2>📋 Scenario: ${currentScenario.name}</h2>
+        <p>${currentScenario.description}</p>
+        <ul>${reqs}</ul>
+      `;
+
+      // special case: Video Editing → show only relevant components
+      let categoriesToShow = Object.keys(componentsByCategory);
+      if (currentScenario.name === "Video Editing") {
+        categoriesToShow = ["CPU","GPU","RAM","Storage","PSU","Motherboard"]; // filter
+      }
+
+      for (const category of categoriesToShow) {
+        const catDiv = document.createElement("div");
+        catDiv.className = "category";
+        catDiv.innerHTML = `<h3>${category}</h3><div class="grid"></div>`;
+
+        componentsByCategory[category].forEach(c => {
+          const div = document.createElement("div");
+          div.className = "component";
+          div.draggable = true;
+          div.dataset.type = category;
+          div.dataset.name = c.name;
+          div.innerHTML = `<img src="${c.img}" alt="${c.name}"><p>${c.name}</p>`;
+          div.addEventListener("dragstart", dragStart);
+          catDiv.querySelector(".grid").appendChild(div);
+        });
+
+        compDiv.appendChild(catDiv);
+      }
+
+      document.getElementById("result").innerText = `Loaded: ${currentScenario.name}`;
+    }
+
+    function randomScenario() {
+      const keys = Object.keys(scenarios);
+      const randomKey = keys[Math.floor(Math.random()*keys.length)];
+      loadScenario(randomKey);
+    }
+
+    function dragStart(e) {
+      e.dataTransfer.setData("type", e.target.dataset.type);
+      e.dataTransfer.setData("name", e.target.dataset.name);
+    }
+
+    document.querySelectorAll(".slot").forEach(slot => {
+      slot.addEventListener("dragover", e => {
+        e.preventDefault();
+        slot.classList.add("highlight");
+      });
+      slot.addEventListener("dragleave", () => slot.classList.remove("highlight"));
+      slot.addEventListener("drop", e => {
+        e.preventDefault();
+        slot.classList.remove("highlight");
+        const type = e.dataTransfer.getData("type");
+        const name = e.dataTransfer.getData("name");
+        if (slot.dataset.type === type) {
+          slot.innerHTML = `<strong>${type}:</strong> ${name}`;
+          slot.dataset.selected = name;
+        } else {
+          alert("Wrong slot! Place it in the correct slot.");
+        }
+      });
+    });
+
+    function checkBuild() {
+      if (!currentScenario) {
+        document.getElementById("result").innerText = "Please select a scenario first!";
+        return;
+      }
+      let correct = true;
+      document.querySelectorAll(".slot").forEach(slot => {
+        if (slot.dataset.selected !== currentScenario.requirements[slot.dataset.type]) {
+          correct = false;
+        }
+      });
+        if (correct) {
+            document.getElementById("result").innerText = "🎉 Perfect Build! All components match the scenario.";
+        } else {
+            document.getElementById("result").innerText = "❌ Some components are incorrect. Please review your build.";
+        }
+    }
+  </script> 
+</body>
+</html>

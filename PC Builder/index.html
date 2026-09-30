@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attractive Spin the Wheel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 28px;
+      text-shadow: 2px 2px 5px black;
+    }
+
+    #pointer {
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid gold;
+      margin: 0 auto;
+      position: relative;
+      top: 20px;
+      z-index: 2;
+      filter: drop-shadow(0 0 6px black);
+    }
+
+    #wheel {
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      border: 12px solid #fff;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    }
+
+    .slice {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 3px black;
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+
+    /* Attractive button styling */
+    button {
+      margin: 10px;
+      padding: 12px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+    }
+
+    #startBtn {
+      background: linear-gradient(45deg, #06d6a0, #1b9aaa);
+      box-shadow: 0 0 10px #06d6a0;
+    }
+
+    #startBtn:hover {
+      box-shadow: 0 0 20px #06d6a0;
+    }
+
+    #stopBtn {
+      background: linear-gradient(45deg, #ef476f, #d62828);
+      box-shadow: 0 0 10px #ef476f;
+    }
+
+    #stopBtn:hover {
+      box-shadow: 0 0 20px #ef476f;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffd60a;
+      text-shadow: 2px 2px 5px black;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎡 Spin the Wheel (1–18)</h1>
+  <div id="pointer"></div>
+  <div id="wheel"></div>
+  <button id="startBtn">Start</button>
+  <button id="stopBtn" disabled>Stop</button>
+  <div id="result"></div>
+
+  <script>
+    const wheel = document.getElementById("wheel");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const result = document.getElementById("result");
+
+    const totalNumbers = 18;
+    let availableNumbers = Array.from({length: totalNumbers}, (_, i) => i + 1);
+    let spinning = false;
+    let spinInterval;
+    let currentRotation = 0;
+
+    // 🎨 Bright attractive colors
+    const colors = [
+      "#e63946","#f1c40f","#2ecc71","#3498db","#9b59b6",
+      "#ff6f61","#06d6a0","#1b9aaa","#ef476f","#ffd166",
+      "#118ab2","#073b4c","#ff9f1c","#8338ec","#fb5607",
+      "#3a86ff","#ff006e","#0ead69"
+    ];
+
+    // Create wheel slices
+    for (let i = 0; i < totalNumbers; i++) {
+      const slice = document.createElement("div");
+      slice.className = "slice";
+      slice.style.background = colors[i % colors.length];
+      slice.style.transform = `rotate(${(360 / totalNumbers) * i}deg) skewY(${90 - 360 / totalNumbers}deg)`;
+      slice.textContent = i + 1;
+      wheel.appendChild(slice);
+    }
+
+    // Start spinning
+    startBtn.addEventListener("click", () => {
+      if (availableNumbers.length === 0) {
+        result.textContent = "✅ All numbers used!";
+        return;
+      }
+      spinning = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      spinInterval = setInterval(() => {
+        currentRotation += 15; // fast spin
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
+      }, 30);
+    });
+
+    // Stop spinning
+    stopBtn.addEventListener("click", () => {
+      if (!spinning) return;
+      spinning = false;
+      clearInterval(spinInterval);
+
+      // Pick random number from available
+      const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+      const chosenNumber = availableNumbers[randomIndex];
+      availableNumbers.splice(randomIndex, 1);
+
+      const sliceAngle = 360 / totalNumbers;
+      const finalRotation = 360 * 5 + (360 - (chosenNumber - 1) * sliceAngle - sliceAngle / 2);
+
+      wheel.style.transition = "transform 5s ease-out";
+      wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+      setTimeout(() => {
+        result.textContent = `🎉 You got: ${chosenNumber}`;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        wheel.style.transition = "none";
+
+        // 👉 Redirect to page
+        window.location.href = `page${chosenNumber}.html`;
+      }, 5000);
+    });
+  </script>
+</body>
+</html>

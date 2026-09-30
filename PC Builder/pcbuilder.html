@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PC Builder Symposium Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffcc;
+    }
+    .hidden { display: none; }
+    .menu button {
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #00ffcc;
+      color: #000;
+      cursor: pointer;
+    }
+    .menu button:hover { background: #00cc99; }
+    .components, .slots {
+      width: 45%;
+      padding: 20px;
+      background: #2a2a40;
+      border-radius: 10px;
+    }
+    .item, .slot {
+      background: #444;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: grab;
+    }
+    .slot { border: 2px dashed #aaa; min-height: 50px; }
+    .correct { background: #2ecc71 !important; color: #fff; }
+    .wrong { background: #e74c3c !important; color: #fff; }
+    select, button {
+      padding: 10px; margin: 10px; border-radius: 5px;
+    }
+    #result, #score {
+      margin-top: 20px; font-size: 20px; font-weight: bold;
+    }
+    .scenario { background:#2a2a40; margin:20px auto; padding:20px; width:80%; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <h1>💻 PC Builder Symposium Game</h1>
+
+  <!-- Main Menu -->
+  <div id="menu" class="menu">
+    <p>Choose a round to begin:</p>
+    <button onclick="window.location.href='r1.html'">Round 1: PC Assembly</button>
+    <button onclick="showRound('budget')">Round 2: Budget Challenge</button>
+    <button onclick="window.location.href='r3.html'">Round 3: Troubleshooting</button>
+   
+  </div>
+
+  <!-- Round 1: Assembly -->
+   <form action="r1.html" method="post">
+  <div id="assembly" class="hidden">
+    <h2>🔧 Round 1: PC Assembly</h2>
+    <p>Drag each component to the correct slot!</p>
+    <div style="display:flex; justify-content:space-between; margin-top:20px;">
+      <div class="components">
+        <h3>Components</h3>
+        <div class="item" draggable="true" id="CPU">CPU</div>
+        <div class="item" draggable="true" id="GPU">GPU</div>
+        <div class="item" draggable="true" id="RAM">RAM</div>
+        <div class="item" draggable="true" id="SSD">SSD</div>
+        <div class="item" draggable="true" id="PSU">Power Supply (PSU)</div>
+      </div>
+      <div class="slots">
+        <h3>PC Slots</h3>
+        <div class="slot" data-component="CPU">CPU Slot</div>
+        <div class="slot" data-component="GPU">GPU Slot</div>
+        <div class="slot" data-component="RAM">RAM Slot</div>
+        <div class="slot" data-component="SSD">Storage Slot</div>
+        <div class="slot" data-component="PSU">PSU Slot</div>
+      </div>
+    </div>
+    <div id="score">Score: 0 / 5</div>
+    <button onclick="backToMenu()">⬅ Back to Menu</button>
+  </div>
+  </form>
+  
+  <!-- Round 2: Budget -->
+  <div id="budget" class="hidden">
+    <h2>💰 Round 2: Budget PC Challenge</h2>
+    <p>Build the best PC you can within a ₹50,000 budget!</p>
+
+    <div>
+      <h3>CPU</h3>
+      <select id="cpu">
+        <option value="0-0">-- Select CPU --</option>
+        <option value="15000-80">Intel i5 (₹15,000, Score 80)</option>
+        <option value="25000-120">Intel i7 (₹25,000, Score 120)</option>
+        <option value="10000-60">AMD Ryzen 3 (₹10,000, Score 60)</option>
+        <option value="20000-110">AMD Ryzen 5 (₹20,000, Score 110)</option>
+      </select>
+
+      <h3>GPU</h3>
+      <select id="gpu">
+        <option value="0-0">-- Select GPU --</option>
+        <option value="12000-70">GTX 1650 (₹12,000, Score 70)</option>
+        <option value="20000-120">RTX 3050 (₹20,000, Score 120)</option>
+        <option value="30000-200">RTX 4060 (₹30,000, Score 200)</option>
+      </select>
+
+      <h3>RAM</h3>
+      <select id="ram">
+        <option value="0-0">-- Select RAM --</option>
+        <option value="4000-30">8GB DDR4 (₹4,000, Score 30)</option>
+        <option value="8000-60">16GB DDR4 (₹8,000, Score 60)</option>
+        <option value="12000-90">32GB DDR4 (₹12,000, Score 90)</option>
+      </select>
+
+      <h3>Storage</h3>
+      <select id="storage">
+        <option value="0-0">-- Select Storage --</option>
+        <option value="3000-20">1TB HDD (₹3,000, Score 20)</option>
+        <option value="6000-50">500GB SSD (₹6,000, Score 50)</option>
+        <option value="10000-90">1TB NVMe SSD (₹10,000, Score 90)</option>
+      </select>
+
+      <h3>Power Supply</h3>
+      <select id="psu">
+        <option value="0-0">-- Select PSU --</option>
+        <option value="3000-20">450W PSU (₹3,000, Score 20)</option>
+        <option value="5000-40">650W PSU (₹5,000, Score 40)</option>
+        <option value="7000-60">750W PSU (₹7,000, Score 60)</option>
+      </select>
+    </div>
+
+    <button onclick="calculateBuild()">Submit Build</button>
+    <div id="result"></div>
+    <button onclick="backToMenu()">⬅ Back to Menu</button>
+  </div>
+
+  <!-- Round 3: Troubleshooting -->
+  <div id="troubleshoot" class="hidden">
+    <h2>🛠 Round 3: Troubleshooting Challenge</h2>
+    <p>Read the scenario and choose the correct issue.</p>
+    <div class="scenario" id="scenarioBox"></div>
+    <div id="options"></div>
+    <div id="resultTrouble"></div>
+    <button onclick="nextScenario()">➡ Next Scenario</button>
+    <button onclick="backToMenu()">⬅ Back to Menu</button>
+  </div>
+
+  <script>
+    // --- Menu control ---
+    function showRound(id) {
+      document.getElementById("menu").classList.add("hidden");
+      document.querySelectorAll("div[id]").forEach(div => {
+        if (div.id !== "menu") div.classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+      if (id === "assembly") initAssembly();
+      if (id === "troubleshoot") loadScenario();
+    }
+    function backToMenu() {
+      document.querySelectorAll("div[id]").forEach(div => div.classList.add("hidden"));
+      document.getElementById("menu").classList.remove("hidden");
+    }
+
+    // --- Round 1 Assembly ---
+    let score = 0;
+    function initAssembly() {
+      score = 0;
+      document.getElementById("score").textContent = "Score: 0 / 5";
+    }
+    document.querySelectorAll('.item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', e.target.id);
+      });
+    });
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.addEventListener('dragover', e => e.preventDefault());
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        const itemId = e.dataTransfer.getData('text/plain');
+        const draggedItem = document.getElementById(itemId);
+        if (e.target.getAttribute('data-component') === itemId) {
+          e.target.textContent = itemId + " ✅";
+          e.target.classList.add('correct');
+          if (draggedItem) draggedItem.remove();
+          score++;
+          document.getElementById("score").textContent = `Score: ${score} / 5`;
+          if (score === 5) setTimeout(()=>alert("🎉 PC Assembled Successfully!"),200);
+        } else {
+          e.target.classList.add('wrong');
+          setTimeout(()=>e.target.classList.remove('wrong'),1000);
+        }
+      });
+    });
+
+    // --- Round 2 Budget ---
+    function calculateBuild() {
+      let totalCost = 0, totalScore = 0;
+      ["cpu","gpu","ram","storage","psu"].forEach(id=>{
+        const v=document.getElementById(id).value.split("-");
+        totalCost+=parseInt(v[0]); totalScore+=parseInt(v[1]);
+      });
+      let resultText = `💰 Total Cost: ₹${totalCost}<br>⚡ Performance Score: ${totalScore}`;
+      if (totalCost>50000) resultText+="<br><span style='color:red'>❌ Over Budget!</span>";
+      else if (totalCost===0) resultText="⚠ Please select all components!";
+      else resultText+="<br><span style='color:lightgreen'>✅ Build Successful!</span>";
+      document.getElementById("result").innerHTML=resultText;
+    }
+
+    // --- Round 3 Troubleshoot ---
+    const scenarios=[
+      {text:"The PC powers on, fans spin, but there is no display.", options:["Loose RAM","Faulty PSU","Wrong keyboard","Missing SSD"], answer:"Loose RAM"},
+      {text:"The PC does not power on at all.", options:["Dead GPU","Insufficient PSU wattage","Loose monitor cable","No internet"], answer:"Insufficient PSU wattage"},
+      {text:"System boots but crashes during gaming.", options:["Weak GPU driver","Overheating GPU","Too much storage","No antivirus"], answer:"Overheating GPU"},
+      {text:"PC is slow even though CPU/GPU are powerful.", options:["Low RAM","Faulty PSU","Overclocked CPU","Big monitor"], answer:"Low RAM"},
+      {text:"SSD connected, but Windows setup cannot detect storage.", options:["Faulty PSU","Loose SSD connection","Wrong keyboard","Low RAM"], answer:"Loose SSD connection"}
+    ];
+    let current=0;
+    function loadScenario() {
+      document.getElementById("resultTrouble").innerHTML="";
+      const s=scenarios[current];
+      document.getElementById("scenarioBox").innerHTML=`<h3>Scenario ${current+1}</h3><p>${s.text}</p>`;
+      const optionsDiv=document.getElementById("options"); optionsDiv.innerHTML="";
+      s.options.forEach(opt=>{
+        const btn=document.createElement("button"); btn.textContent=opt;
+        btn.onclick=()=>checkAnswer(opt); optionsDiv.appendChild(btn);
+      });
+    }
+    function checkAnswer(choice){
+      const s=scenarios[current];
+      if(choice===s.answer) document.getElementById("resultTrouble").innerHTML="✅ Correct!";
+      else document.getElementById("resultTrouble").innerHTML="❌ Wrong! Correct: "+s.answer;
+    }
+    function nextScenario(){ current=(current+1)%scenarios.length; loadScenario(); }
+  </script>
+</body>
+</html>

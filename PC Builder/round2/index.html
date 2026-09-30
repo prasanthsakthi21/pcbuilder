@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Round 2</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+ <style>
+  body {
+    background: #ffffff;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    font-size: 1.3rem; /* slightly bigger base text */
+  }
+
+  
+
+  h1 {
+    font-weight: 800;
+    color: white;
+    font-size: 2.5rem;  /* bigger heading */
+    margin: 0;
+  }
+
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: black;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .logo-bar img {
+    background: black;
+    padding: 5px;
+  }
+
+  .lead.text-center {
+    font-size: 1.8rem; /* bigger lead text */
+    line-height: 2.3rem;
+    margin-bottom: 2rem;
+  }
+
+  #category {
+    font-size: 1.5rem; /* bigger dropdown text */
+  }
+
+  .lot-btn {
+    font-size: 1.6rem;       /* larger buttons */
+    min-width: 12rem;        /* bigger width */
+    min-height: 4.5rem;      /* taller buttons */
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .lot-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .lot-btn.active {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+  }
+
+  .lot-btn.btn-secondary:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+  }
+
+  .btn-custom {
+    font-size: 1.3rem;
+    padding: 0.9rem 1.3rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+
+  .btn-custom:hover {
+    transform: scale(1.05);
+  }
+
+  #backToLots {
+    font-size: 1.4rem;
+    padding: 1rem 1.5rem;
+  }
+
+  #timer {
+  font-size: 2.5rem;       /* bigger timer */
+  font-weight: bold;
+  color: red;              /* red color */
+  text-align: center;      /* center horizontally */
+  margin: 2rem 0;          /* spacing above and below */
+}
+
+  #result-section {
+    padding: 2rem;
+  }
+
+  @media (max-width: 576px) {
+    .lot-btn {
+      min-width: 10rem;
+      font-size: 1.4rem;
+    }
+  }
+  #components-section .form-select {
+  font-size: 1.25rem;       /* bigger text */
+  padding: 0.75rem 1rem;    /* more padding for bigger clickable area */
+}
+#components-section .form-label {
+  font-size: 1.2rem;        /* bigger labels for components */
+  margin-bottom: 0.5rem;
+}
+#result-section h5 {
+  margin-bottom: 1rem;
+}
+#participant-choices p,
+#correct-answers p {
+  font-size: 1.2rem;
+  margin: 0.4rem 0;
+}
+
+</style>
+
+
+</head>
+<body>
+
+<div class="event-card container">
+  <div class="logo-bar">
+    <img src="logo.png" alt="Logo" height="70" />
+    <h1>Round 2: Budget Challenge</h1>
+  </div>
+
+  <p class="lead text-center">Select a lot and build your PC based on the chosen category.  
+  You have <span class="text-danger fw-bold">50 seconds</span> to finish your build!</p>
+
+  <div id="lot-section" class="mb-4">
+    <div class="text-center">
+      <h4><b>Select Your Lot:</b></h4>
+      <div id="lot-buttons" class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+        <!-- 20 lot buttons -->
+        <button type="button" class="btn btn-primary lot-btn">Lot 1</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 2</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 3</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 4</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 5</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 6</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 7</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 8</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 9</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 10</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 11</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 12</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 13</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 14</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 15</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 16</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 17</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 18</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 19</button>
+        <button type="button" class="btn btn-primary lot-btn">Lot 20</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4 d-none" id="category-section">
+    <label for="category" class="form-label">Select PC Category:</label>
+    <select id="category" class="form-select">
+      <option value="">-- Choose Category --</option>
+      <option value="entry">Entry-Level PC - ₹30,000</option>
+      <option value="entryPlus">Entry-Level Plus - ₹35,000</option>
+      <option value="normal">Normal PC - ₹50,000</option>
+      <option value="normalPlus">Normal Plus - ₹60,000</option>
+      <option value="advanced">Advanced Normal PC - ₹75,000</option>
+      <option value="gaming">Gaming PC - ₹1,00,000</option>
+      <option value="highGaming">High Gaming PC - ₹1,20,000</option>
+      <option value="gamingPlus">Gaming Plus - ₹1,30,000</option>
+      <option value="workstation">Workstation - ₹1,50,000</option>
+      <option value="workstationPlus">Workstation Plus - ₹1,80,000</option>
+      <option value="highEndWorkstation">High-End Workstation - ₹2,00,000</option>
+      <option value="budgetOffice">Budget Office PC - ₹25,000</option>
+      <option value="studentPC">Student PC - ₹40,000</option>
+      <option value="streamingPC">Streaming PC - ₹70,000</option>
+      <option value="renderingPC">Rendering PC - ₹90,000</option>
+      <option value="aiPC">AI Development PC - ₹1,10,000</option>
+      <option value="serverPC">Mini Server PC - ₹1,40,000</option>
+      <option value="dualGPU">Dual GPU PC - ₹1,60,000</option>
+      <option value="ultimateGaming">Ultimate Gaming PC - ₹2,20,000</option>
+      <option value="vrPC">VR Ready PC - ₹1,90,000</option>
+      <option value="creatorPC">Content Creator PC - ₹80,000</option>
+    </select>
+  </div>
+
+  <div id="timer" class="d-none">⏳ Time Left: <span id="time-left">50</span>s</div>
+
+  <div id="components-section" class="d-none">
+    <h4 class="mb-3">🖥 Choose Components:</h4>
+    <div class="row g-3" id="components-container">
+      <div class="col-md-6">
+        <label class="form-label">CPU:</label>
+        <select class="form-select" data-component="CPU">
+          <option value="">--Select CPU--</option>
+          <option value="Intel i3" data-price="7000">Intel i3</option>
+          <option value="Intel i5" data-price="12000">Intel i5</option>
+          <option value="Intel i7" data-price="25000">Intel i7</option>
+          <option value="Intel i9" data-price="40000">Intel i9</option>
+          <option value="AMD Ryzen 3" data-price="6500">AMD Ryzen 3</option>
+          <option value="AMD Ryzen 5" data-price="11000">AMD Ryzen 5</option>
+          <option value="AMD Ryzen 7" data-price="22000">AMD Ryzen 7</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">GPU:</label>
+        <select class="form-select" data-component="GPU">
+          <option value="">--Select GPU--</option>
+          <option value="NVIDIA GTX 1650" data-price="12000">NVIDIA GTX 1650</option>
+          <option value="NVIDIA GTX 1660 Super" data-price="18000">NVIDIA GTX 1660 Super</option>
+          <option value="NVIDIA RTX 3060" data-price="35000">NVIDIA RTX 3060</option>
+          <option value="NVIDIA RTX 3070" data-price="45000">NVIDIA RTX 3070</option>
+          <option value="NVIDIA RTX 4070" data-price="60000">NVIDIA RTX 4070</option>
+          <option value="AMD Radeon RX 6600" data-price="28000">AMD Radeon RX 6600</option>
+          <option value="AMD Radeon RX 6800" data-price="40000">AMD Radeon RX 6800</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">RAM:</label>
+        <select class="form-select" data-component="RAM">
+          <option value="">--Select RAM--</option>
+          <option value="8GB DDR4" data-price="3000">8GB DDR4</option>
+          <option value="16GB DDR4" data-price="5500">16GB DDR4</option>
+          <option value="32GB DDR4" data-price="9000">32GB DDR4</option>
+          <option value="64GB DDR5" data-price="18000">64GB DDR5</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Storage:</label>
+        <select class="form-select" data-component="Storage">
+          <option value="">--Select Storage--</option>
+          <option value="256GB SSD" data-price="2000">256GB SSD</option>
+          <option value="512GB SSD" data-price="3500">512GB SSD</option>
+          <option value="1TB SSD" data-price="6000">1TB SSD</option>
+          <option value="2TB HDD" data-price="8000">2TB HDD</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Motherboard:</label>
+        <select class="form-select" data-component="Motherboard">
+          <option value="">--Select Motherboard--</option>
+          <option value="Intel B460" data-price="4500">Intel B460</option>
+          <option value="Intel Z490" data-price="8000">Intel Z490</option>
+          <option value="AMD B550" data-price="5000">AMD B550</option>
+          <option value="AMD X570" data-price="9500">AMD X570</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">PSU:</label>
+        <select class="form-select" data-component="PSU">
+          <option value="">--Select PSU--</option>
+          <option value="450W Bronze" data-price="3000">450W Bronze</option>
+          <option value="550W Bronze" data-price="4500">550W Bronze</option>
+          <option value="650W Gold" data-price="7000">650W Gold</option>
+          <option value="750W Platinum" data-price="10000">750W Platinum</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Cabinet:</label>
+        <select class="form-select" data-component="Cabinet">
+          <option value="">--Select Cabinet--</option>
+          <option value="Mid Tower" data-price="2500">Mid Tower</option>
+          <option value="Full Tower" data-price="4000">Full Tower</option>
+          <option value="Mini Tower" data-price="1500">Mini Tower</option>
+          <option value="RGB Gaming Cabinet" data-price="5000">RGB Gaming Cabinet</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="submitBtn" class="btn btn-success btn-custom w-100 mt-4">🚀 Submit Build</button>
+  </div>
+  <div id="result-section" class="d-none">
+  <h4>📊 Results:</h4>
+    <p class="lead"><strong>Score:</strong> <span id="score-percentage"></span>%</p>
+<hr>
+  <p><strong>Selected Lot:</strong> <span id="result-lot"></span></p>
+  <p><strong>Selected Category:</strong> <span id="result-category"></span></p>
+  <p><strong>Target Budget:</strong> ₹<span id="result-budget"></span></p>
+  <hr>
+
+  <div class="row">
+    <!-- Left: Participant Choices -->
+    <div class="col-md-6">
+      <h5 class="text-primary">🧑‍💻 Participant’s Build</h5>
+      <div id="participant-choices"></div>
+      <p class="lead mt-3"><strong>Total Purchased:</strong> ₹<span id="result-total-purchased" class="fw-bold text-primary">0</span></p>
+    </div>
+
+    <!-- Right: Correct Build -->
+    <div class="col-md-6">
+      <h5 class="text-success">✅ Correct Build</h5>
+      <div id="correct-answers"></div>
+    </div>
+  </div>
+
+  
+
+  <div class="d-flex gap-2 mt-3">
+    <button id="backToLots" class="btn btn-warning">⬅ Back to Lot Selection</button>
+  </div>
+</div>
+
+  
+</div>
+
+<script>
+  const lotButtons = Array.from(document.querySelectorAll(".lot-btn"));
+  const categorySection = document.getElementById("category-section");
+  const categorySelect = document.getElementById("category");
+  const componentsSection = document.getElementById("components-section");
+  const submitBtn = document.getElementById("submitBtn");
+  const resultSection = document.getElementById("result-section");
+  const resultLot = document.getElementById("result-lot");
+  const resultCategory = document.getElementById("result-category");
+  const resultBudget = document.getElementById("result-budget");
+  const resultContainer = document.getElementById("result-container");
+  const timer = document.getElementById("timer");
+  const timeLeft = document.getElementById("time-left");
+  const priceBreakdown = document.getElementById("price-breakdown");
+  const resultTotalPurchased = document.getElementById("result-total-purchased");
+  const backToLots = document.getElementById("backToLots");
+  const rebuildSameCategory = document.getElementById("rebuildSameCategory");
+
+  let countdown = null;
+  let selectedLot = null;
+  let usedLots = new Set();
+  let usedCategories = new Set();
+
+  const budgetMap = {
+    entry: 30000, entryPlus: 35000, normal: 50000, normalPlus: 60000,
+    advanced: 75000, gaming: 100000, highGaming: 120000, gamingPlus: 130000,
+    workstation: 150000, workstationPlus: 180000, highEndWorkstation: 200000,
+    budgetOffice: 25000, studentPC: 40000, streamingPC: 70000,
+    renderingPC: 90000, aiPC: 110000, serverPC: 140000, dualGPU: 160000,
+    ultimateGaming: 220000, vrPC: 190000, creatorPC: 80000
+  };
+
+  // ✅ Correct answers
+  const answers = {
+    entry: { CPU:"Intel i3", GPU:"NVIDIA GTX 1650", RAM:"8GB DDR4", Storage:"256GB SSD", Motherboard:"Intel B460", PSU:"450W Bronze", Cabinet:"Mid Tower" },
+    entryPlus: { CPU:"Intel i5", GPU:"NVIDIA GTX 1660 Super", RAM:"16GB DDR4", Storage:"512GB SSD", Motherboard:"Intel Z490", PSU:"550W Bronze", Cabinet:"Mid Tower" },
+    normal: { CPU:"Intel i5", GPU:"NVIDIA RTX 3060", RAM:"16GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"650W Gold", Cabinet:"Full Tower" },
+    normalPlus: { CPU:"Intel i7", GPU:"NVIDIA RTX 3060", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"650W Gold", Cabinet:"Full Tower" },
+    advanced: { CPU:"Intel i7", GPU:"NVIDIA RTX 3070", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    gaming: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    highGaming: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    gamingPlus: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"2TB HDD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    workstation: { CPU:"Intel i9", GPU:"NVIDIA RTX 3070", RAM:"64GB DDR5", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"Full Tower" },
+    workstationPlus: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"Full Tower" },
+    highEndWorkstation: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"2TB HDD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"Full Tower" },
+    budgetOffice: { CPU:"Intel i3", GPU:"NVIDIA GTX 1650", RAM:"8GB DDR4", Storage:"256GB SSD", Motherboard:"Intel B460", PSU:"450W Bronze", Cabinet:"Mini Tower" },
+    studentPC: { CPU:"AMD Ryzen 3", GPU:"NVIDIA GTX 1660 Super", RAM:"16GB DDR4", Storage:"512GB SSD", Motherboard:"AMD B550", PSU:"550W Bronze", Cabinet:"Mid Tower" },
+    streamingPC: { CPU:"Intel i5", GPU:"NVIDIA RTX 3060", RAM:"16GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"650W Gold", Cabinet:"Full Tower" },
+    renderingPC: { CPU:"AMD Ryzen 5", GPU:"NVIDIA RTX 3070", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"AMD X570", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    aiPC: { CPU:"Intel i7", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"Full Tower" },
+    serverPC: { CPU:"Intel i9", GPU:"AMD Radeon RX 6800", RAM:"64GB DDR5", Storage:"2TB HDD", Motherboard:"AMD X570", PSU:"750W Platinum", Cabinet:"Full Tower" },
+    dualGPU: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"2TB HDD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    ultimateGaming: { CPU:"Intel i9", GPU:"NVIDIA RTX 4070", RAM:"64GB DDR5", Storage:"2TB HDD", Motherboard:"Intel Z490", PSU:"750W Platinum", Cabinet:"RGB Gaming Cabinet" },
+    vrPC: { CPU:"AMD Ryzen 7", GPU:"NVIDIA RTX 3070", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"AMD X570", PSU:"650W Gold", Cabinet:"Full Tower" },
+    creatorPC: { CPU:"Intel i5", GPU:"NVIDIA RTX 3060", RAM:"32GB DDR4", Storage:"1TB SSD", Motherboard:"Intel Z490", PSU:"650W Gold", Cabinet:"Full Tower" }
+  };
+
+  // Helper: update enabled/disabled state of lot buttons based on usedLots set
+  function refreshLotButtons() {
+    lotButtons.forEach(btn => {
+      const name = btn.textContent.trim();
+      const isUsed = usedLots.has(name);
+      btn.disabled = isUsed;
+      btn.classList.toggle('btn-primary', !isUsed);
+      btn.classList.toggle('btn-secondary', isUsed);
+      btn.classList.remove('active');
+    });
+  }
+
+  // Initialize lot buttons
+  refreshLotButtons();
+
+  // Lot selection
+  lotButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const name = btn.textContent.trim();
+      if (usedLots.has(name)) {
+        alert("This lot has already been used. Please select another lot.");
+        return;
+      }
+
+      selectedLot = name;
+
+      // Visual active on chosen lot only
+      refreshLotButtons();
+      btn.classList.add("active");
+
+      // Show category section and reset previous states
+      categorySection.classList.remove("d-none");
+      componentsSection.classList.add("d-none");
+      resultSection.classList.add("d-none");
+      categorySelect.value = "";
+      categorySelect.disabled = false;
+
+      // Reset component selects
+      document.querySelectorAll("#components-container select").forEach(select => {
+        select.value = "";
+      });
+
+      // Reset timer if any
+      clearInterval(countdown);
+      timeLeft.textContent = 50;
+      timer.classList.add("d-none");
+
+      // Disable categories that were used earlier
+      Array.from(categorySelect.options).forEach(option => {
+        option.disabled = (option.value !== "" && usedCategories.has(option.value));
+      });
+    });
+  });
+
+  // Category selection -> locks lot + starts timer + shows components
+  categorySelect.addEventListener("change", () => {
+    const selectedCategory = categorySelect.value;
+    if (!selectedCategory) return;
+
+    if (!selectedLot) {
+      alert("Please select a Lot first!");
+      categorySelect.value = "";
+      return;
+    }
+
+    if (usedCategories.has(selectedCategory)) {
+      alert("This category has already been used. Please select another one.");
+      categorySelect.value = "";
+      return;
+    }
+
+    // Lock the lot and category for future rounds
+    usedLots.add(selectedLot);
+    usedCategories.add(selectedCategory);
+    refreshLotButtons();
+
+    categorySelect.disabled = true;
+    componentsSection.classList.remove("d-none");
+    resultSection.classList.add("d-none");
+
+    // Start timer
+    clearInterval(countdown);
+    let time = 50;
+    timeLeft.textContent = time;
+    timer.classList.remove("d-none");
+
+    countdown = setInterval(() => {
+      time--;
+      timeLeft.textContent = time;
+      if (time <= 0) {
+        clearInterval(countdown);
+        // Auto-submit when time runs out
+        handleSubmit();
+      }
+    }, 1000);
+  });
+
+  // Main submit flow
+  submitBtn.addEventListener("click", () => {
+    handleSubmit();
+  });
+
+  function handleSubmit() {
+  clearInterval(countdown);
+
+  const selectedCategory = categorySelect.value;
+  if (!selectedCategory) {
+    alert("Please ensure a lot and category are selected before submitting!");
+    return;
+  }
+
+  const selectedComponents = {};
+  const componentSelects = document.querySelectorAll("#components-container select");
+  let totalPurchasedPrice = 0;
+
+  let participantHtml = '<h6>💰 Price Breakdown</h6>';
+
+  componentSelects.forEach(select => {
+    const label = select.getAttribute('data-component') || "Component";
+    const selectedOption = select.options[select.selectedIndex];
+    const valueText = selectedOption ? (selectedOption.value || selectedOption.text) : "";
+    const price = selectedOption && selectedOption.dataset && selectedOption.dataset.price ? Number(selectedOption.dataset.price) : 0;
+
+    selectedComponents[label] = valueText || "Not Selected";
+    totalPurchasedPrice += price;
+
+    participantHtml += `<p><strong>${label}:</strong> ${valueText ? valueText + " — ₹" + price.toLocaleString() : "<em>Not Selected</em>"}</p>`;
+  });
+
+  document.getElementById("participant-choices").innerHTML = participantHtml;
+  resultTotalPurchased.textContent = totalPurchasedPrice.toLocaleString();
+
+  // Correct build
+  const correctComponents = answers[selectedCategory] || {};
+  let correctHtml = "";
+  let score = 0;
+  const total = Object.keys(correctComponents).length || 7;
+
+  for (let comp in correctComponents) {
+    let userChoice = selectedComponents[comp] || "Not Selected";
+    let correctChoice = correctComponents[comp];
+    let isCorrect = userChoice === correctChoice;
+    if (isCorrect) score++;
+
+    correctHtml += `<p><strong>${comp}:</strong> ${correctChoice}</p>`;
+  }
+
+  document.getElementById("correct-answers").innerHTML = correctHtml;
+
+  // Show results
+  resultLot.textContent = selectedLot;
+  const categoryName = categorySelect.options[categorySelect.selectedIndex]?.text || "N/A";
+  resultCategory.textContent = categoryName;
+  resultBudget.textContent = (budgetMap[selectedCategory] || 0).toLocaleString();
+  document.getElementById("score-percentage").textContent = total ? ((score / total) * 100).toFixed(0) : "0";
+
+  componentsSection.classList.add("d-none");
+  timer.classList.add("d-none");
+  resultSection.classList.remove("d-none");
+}
+
+
+  // Back to lot selection: hides result and allows selecting another lot (depending on usedLots)
+  backToLots.addEventListener("click", () => {
+    resultSection.classList.add("d-none");
+    categorySection.classList.add("d-none");
+    componentsSection.classList.add("d-none");
+    selectedLot = null;
+    // Re-enable lot buttons that are NOT used
+    refreshLotButtons();
+    // clear selections
+    document.querySelectorAll("#components-container select").forEach(select => select.value = "");
+  });
+
+  // Optional: try same category again if you want to allow multiple participants on same lot (behavior can be toggled)
+  rebuildSameCategory.addEventListener("click", () => {
+    // Only allow if there's a previously locked category for that round? Here: let user try building again with same category but not change locking state
+    // We'll reopen components for the last selected category if the category isn't globally blocked (keeps usedLots as-is)
+    if (!categorySelect.value) {
+      alert('No category selected previously in this flow.');
+      return;
+    }
+    // Re-open components for re-build (keeps lot locked)
+    componentsSection.classList.remove('d-none');
+    resultSection.classList.add('d-none');
+    // Reset component picks
+    document.querySelectorAll("#components-container select").forEach(select => select.value = "");
+    // restart timer
+    clearInterval(countdown);
+    let time = 50;
+    timeLeft.textContent = time;
+    timer.classList.remove("d-none");
+    countdown = setInterval(() => {
+      time--;
+      timeLeft.textContent = time;
+      if (time <= 0) {
+        clearInterval(countdown);
+        handleSubmit();
+      }
+    }, 1000);
+  });
+
+  // On page load: ensure categories already used are disabled (if any)
+  (function init() {
+    Array.from(categorySelect.options).forEach(option => {
+      option.disabled = (option.value !== "" && usedCategories.has(option.value));
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>PC Builder Drag & Drop — Interactive</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --good: #16a34a;
+            --bad: #ef4444;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: #e6eef6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 18px 12px;
+            background: #0b1220;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        p.lead {
+            margin: 6px 0 0 0;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .wrap {
+            display: flex;
+            gap: 20px;
+            padding: 18px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 12px auto;
+        }
+
+        .left {
+            flex: 1 1 680px;
+            min-width: 320px;
+        }
+
+        .right {
+            flex: 0 0 360px;
+            min-width: 300px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .rules {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .budget-row {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .budget-row .big {
+            font-weight:700;
+            font-size:18px;
+            color:var(--accent);
+        }
+
+        .progress {
+            background: rgba(255,255,255,0.04);
+            border-radius: 999px;
+            height: 14px;
+            overflow: hidden;
+            margin-top:10px;
+        }
+
+        .progress > i {
+            display:block;
+            height:100%;
+            background: linear-gradient(90deg,var(--accent), #60a5fa);
+            width: 100%;
+            transform-origin: left;
+            transition: width .25s ease;
+        }
+
+        .grid {
+            display:grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap:12px;
+        }
+
+        .part-category {
+            padding:10px;
+            border-radius:8px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .part-list {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:8px;
+        }
+
+        .part {
+            width:100px;
+            height:96px;
+            border-radius:8px;
+            border:1px solid rgba(255,255,255,0.04);
+            display:flex;
+            flex-direction: column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:6px;
+            cursor:grab;
+            user-select:none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            font-size:12px;
+        }
+
+        .part img {
+            max-width: 60px;
+            height: auto;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone {
+            margin-top:10px;
+            padding:10px;
+            border-radius:8px;
+            min-height:48px;
+            border:2px dashed rgba(148,163,184,0.16);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color: #cbd5e1;
+            font-weight:600;
+            background: rgba(255,255,255,0.01);
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .drop-zone img {
+            max-width: 80px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .drop-zone.hover {
+            border-color: var(--accent);
+            background: rgba(56,189,248,0.06);
+            color: #fff;
+        }
+
+        #summary {
+            line-height:1.5;
+        }
+
+        #summary ul {
+            padding-left:18px;
+            margin:8px 0 0 0;
+        }
+
+        .warn {
+            color: var(--bad);
+            font-weight:700;
+        }
+
+        .ok {
+            color: var(--good);
+            font-weight:700;
+        }
+
+        .btn {
+            display:inline-block;
+            padding:8px 12px;
+            border-radius:8px;
+            background:rgba(255,255,255,0.02);
+            border:1px solid rgba(255,255,255,0.03);
+            color:var(--accent);
+            cursor:pointer;
+            font-weight:700;
+        }
+
+        .btn.small{
+            padding:6px 8px;
+            font-size:13px;
+        }
+
+        footer {
+            text-align:center;
+            color:#9aa8bb;
+            padding:18px 12px;
+            font-size:13px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>💻 Virtual PC Builder — Interactive</h1>
+    <p class="lead">Drag & drop components. Live budget, compatibility checks, random twist & export your build.</p>
+</header>
+
+<div class="wrap">
+
+    <div class="left">
+
+        <div class="card rules">
+            <strong>📌 Event Rules</strong>
+            <ul>
+                <li>Build must include: 1 Processor, 1 RAM, 1 GPU (optional for non-gaming), 1 Storage, 1 PSU.</li>
+                <li>One component per category. Replacing refunds previous price.</li>
+                <li>Budget must not go negative.</li>
+                <li>Compatibility checks (RAM type, PSU wattage) will show warnings.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="budget-row">
+                <div>
+                    <div class="big">Budget: ₹<span id="budget">150000</span></div>
+                    <div style="font-size:13px;color:#a8b6c6">Scenario: Gaming / General</div>
+                </div>
+                <div style="text-align:right">
+                    <div>Remaining: <strong id="remaining">150000</strong></div>
+                    <div style="margin-top:6px">
+                        <button id="twistBtn" class="btn small">🎲 Random Twist</button>
+                        <button id="exportBtn" class="btn small">✅ Export Build</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress" aria-hidden>
+                <i id="progressFill" style="width:100%"></i>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="part-category card">
+                <strong>Processor</strong>
+                <div class="part-list">
+                    <div class="part" draggable="true" data-name="Intel i3-12100" data-price="9000" data-ramtype="DDR4" data-watt="65" data-img="https://via.placeholder.com/60x60/60a5fa/ffffff?text=i3">
+                        <img src="images/Intel i3-12100.jpg" alt="Intel i3-12100" />
+                        Intel i3-12100<br>₹9,000
+                    </div>
+                    <div class="part" draggable="true" data-name="Intel i5-10400" data-price="12000" data-ramtype="DDR4" data-watt="65" data-img="https://via.placeholder.com/60x60/60a5fa/ffffff?text=i5">
+                        <img src="https://via.placeholder.com/60x60/60a5fa/ffffff?text=i5" alt="Intel i5-10400" />
+                        Intel i5-10400<br>₹12,000
+                    </div>
+                    <div class="part" draggable="true" data-name="Intel i7-12700" data-price="25000" data-ramtype="DDR5" data-watt="125" data-img="https://via.placeholder.com/60x60/60a5fa/ffffff?text=i7">
+                        <img src="https://via.placeholder.com/60x60/60a5fa/ffffff?text=i7" alt="Intel i7-12700" />
+                        Intel i7-12700<br>₹25,000
+                    </div>
+                    <div class="part" draggable="true" data-name="Ryzen 3 4100" data-price="8000" data-ramtype="DDR4" data-watt="65" data-img="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R3">
+                        <img src="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R3" alt="Ryzen 3 4100" />
+                        Ryzen 3 4100<br>₹8,000
+                    </div>
+                    <div class="part" draggable="true" data-name="Ryzen 5 5600X" data-price="18000" data-ramtype="DDR4" data-watt="95" data-img="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R5">
+                        <img src="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R5" alt="Ryzen 5 5600X" />
+                        Ryzen 5 5600X<br>₹18,000
+                    </div>
+                    <div class="part" draggable="true" data-name="Ryzen 7 5800X" data-price="28000" data-ramtype="DDR4" data-watt="105" data-img="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R7">
+                        <img src="https://via.placeholder.com/60x60/e04b4b/ffffff?text=R7" alt="Ryzen 7 5800X" />
+                        Ryzen 7 5800X<br>₹28,000
+                    </div>
+                </div>
+                <div class="drop-zone" id="Processor">Drop processor here</div>
+            </div>
+
+            <div class="part-category card">
+                <strong>RAM</strong>
+                <div class="part-list">
+                    <div class="part" draggable="true" data-name="8GB DDR4 2666MHz" data-price="2500" data-ramtype="DDR4" data-img="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D4">
+                        <img src="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D4" alt="8GB DDR4" />
+                        8GB DDR4<br>₹2,500
+                    </div>
+                    <div class="part" draggable="true" data-name="16GB DDR4 3200MHz" data-price="5000" data-ramtype="DDR4" data-img="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D4">
+                        <img src="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D4" alt="16GB DDR4" />
+                        16GB DDR4<br>₹5,000
+                    </div>
+                    <div class="part" draggable="true" data-name="32GB DDR5 5600MHz" data-price="12000" data-ramtype="DDR5" data-img="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D5">
+                        <img src="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D5" alt="32GB DDR5" />
+                        32GB DDR5<br>₹12,000
+                    </div>
+                    <div class="part" draggable="true" data-name="64GB DDR5 6000MHz" data-price="24000" data-ramtype="DDR5" data-img="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D5">
+                        <img src="https://via.placeholder.com/60x60/38bdf8/ffffff?text=RAM+D5" alt="64GB DDR5" />
+                        64GB DDR5<br>₹24,000
+                    </div>
+                </div>
+                <div class="drop-zone" id="RAM">Drop RAM here</div>
+            </div>
+
+            <div class="part-category card">
+                <strong>Graphics Card</strong>
+                <div class="part-list">
+                    <div class="part" draggable="true" data-name="NVIDIA RTX 4060" data-price="30000" data-watt="160" data-img="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU">
+                        <img src="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU" alt="RTX 4060" />
+                        RTX 4060<br>₹30,000
+                    </div>
+                    <div class="part" draggable="true" data-name="NVIDIA RTX 4060 Ti" data-price="45000" data-watt="200" data-img="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU">
+                        <img src="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU" alt="RTX 4060 Ti" />
+                        RTX 4060 Ti<br>₹45,000
+                    </div>
+                    <div class="part" draggable="true" data-name="NVIDIA RTX 4070" data-price="55000" data-watt="220" data-img="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU">
+                        <img src="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU" alt="RTX 4070" />
+                        RTX 4070<br>₹55,000
+                    </div>
+                    <div class="part" draggable="true" data-name="NVIDIA RTX 4070 Ti" data-price="65000" data-watt="285" data-img="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU">
+                        <img src="https://via.placeholder.com/60x60/10b981/ffffff?text=GPU" alt="RTX 4070 Ti" />
+                        RTX 4070 Ti<br>₹65,000
+                    </div>
+                </div>
+                <div class="drop-zone" id="GPU">Drop GPU here</div>
+            </div>
+
+            <div class="part-category card">
+                <strong>Storage</strong>
+                <div class="part-list">
+                    <div class="part" draggable="true" data-name="240GB SSD" data-price="2500" data-img="https://via.placeholder.com/60x60/f97316/ffffff?text=SSD">
+                        <img src="https://via.placeholder.com/60x60/f97316/ffffff?text=SSD" alt="240GB SSD" />
+                        240GB SSD<br>₹2,500
+                    </div>
+                    <div class="part" draggable="true" data-name="500GB SSD" data-price="4000" data-img="https://via.placeholder.com/60x60/f97316/ffffff?text=SSD">
+                        <img src="https://via.placeholder.com/60x60/f97316/ffffff?text=SSD" alt="500GB SSD" />
+                        500GB SSD<br>₹4,000
+                    </div>
+                    <div class="part" draggable="true" data-name="1TB NVMe SSD" data-price="8000" data-img="https://via.placeholder.com/60x60/f97316/ffffff?text=NVMe">
+                        <img src="https://via.placeholder.com/60x60/f97316/ffffff?text=NVMe" alt="1TB NVMe" />
+                        1TB NVMe<br>₹8,000
+                    </div>
+                    <div class="part" draggable="true" data-name="2TB NVMe SSD" data-price="14000" data-img="https://via.placeholder.com/60x60/f97316/ffffff?text=NVMe">
+                        <img src="https://via.placeholder.com/60x60/f97316/ffffff?text=NVMe" alt="2TB NVMe" />
+                        2TB NVMe<br>₹14,000
+                    </div>
+                </div>
+                <div class="drop-zone" id="Storage">Drop storage here</div>
+            </div>
+
+            <div class="part-category card">
+                <strong>Power Supply</strong>
+                <div class="part-list">
+                    <div class="part" draggable="true" data-name="550W Bronze PSU" data-price="4000" data-watt="550" data-img="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU">
+                        <img src="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU" alt="550W PSU" />
+                        550W PSU<br>₹4,000
+                    </div>
+                    <div class="part" draggable="true" data-name="650W Gold PSU" data-price="7000" data-watt="650" data-img="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU">
+                        <img src="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU" alt="650W PSU" />
+                        650W PSU<br>₹7,000
+                    </div>
+                    <div class="part" draggable="true" data-name="750W Gold PSU" data-price="9000" data-watt="750" data-img="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU">
+                        <img src="https://via.placeholder.com/60x60/8b5cf6/ffffff?text=PSU" alt="750W PSU" />
+                        750W PSU<br>₹9,000
+                    </div>
+                </div>
+                <div class="drop-zone" id="PSU">Drop PSU here</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="card" id="summary">
+            <h3>Build Summary</h3>
+            <div id="statusMsg" style="margin-bottom:8px;color:#dbeafe">No issues.</div>
+            <ul id="summary-list">
+                <li><em>Drop components into their zones.</em></li>
+            </ul>
+            <div style="margin-top:10px">
+                <strong>Total Spent:</strong> ₹<span id="spent">0</span><br/>
+                <strong>Remaining:</strong> ₹<span id="rem2">150000</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <strong>Judge Feedback</strong>
+            <div style="margin-top:8px;font-size:13px;color:#cbd5e1" id="judgeFeedback">After you complete your build, click <em>Export</em> to save, or let the judge evaluate.</div>
+            <div style="margin-top:12px">
+                <button id="evaluateBtn" class="btn">👩‍⚖ Evaluate Build</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Save this file as <code>index.html</code> and open with any modern browser. To share: upload the file or host on GitHub Pages.
+</footer>
+
+<script>
+    // State
+    const budgetEl = document.getElementById('budget');
+    const remainingEl = document.getElementById('remaining');
+    const progressFill = document.getElementById('progressFill');
+    const summaryList = document.getElementById('summary-list');
+    const spentEl = document.getElementById('spent');
+    const rem2 = document.getElementById('rem2');
+    const statusMsg = document.getElementById('statusMsg');
+    const judgeFeedback = document.getElementById('judgeFeedback');
+
+    let budget = 150000;
+    let remaining = budget;
+    let selections = {}; // category => { name, price, ramtype?, watt?, img? }
+
+    budgetEl.textContent = budget.toLocaleString();
+    remainingEl.textContent = remaining.toLocaleString();
+    rem2.textContent = remaining.toLocaleString();
+    updateProgress();
+
+    // Drag and drop
+    document.querySelectorAll('.part').forEach(p => {
+        p.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/name', p.dataset.name);
+            e.dataTransfer.setData('text/price', p.dataset.price);
+            if (p.dataset.ramtype) e.dataTransfer.setData('text/ramtype', p.dataset.ramtype);
+            if (p.dataset.watt) e.dataTransfer.setData('text/watt', p.dataset.watt);
+            if (p.dataset.img) e.dataTransfer.setData('text/img', p.dataset.img);
+        });
+    });
+
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragover', e => {
+            e.preventDefault();
+            zone.classList.add('hover');
+        });
+
+        zone.addEventListener('dragleave', () => zone.classList.remove('hover'));
+
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('hover');
+            
+            const cat = zone.id;
+            const name = e.dataTransfer.getData('text/name');
+            const price = parseInt(e.dataTransfer.getData('text/price') || '0', 10);
+            const ramtype = e.dataTransfer.getData('text/ramtype') || null;
+            const watt = parseInt(e.dataTransfer.getData('text/watt') || '0', 10);
+            const img = e.dataTransfer.getData('text/img') || null;
+
+            // Save previous so we can restore if needed
+            const prev = selections[cat] ? { ...selections[cat] } : null;
+
+            // Refund previous immediately (so remaining reflects freeing it)
+            if (prev) {
+                remaining += prev.price;
+                delete selections[cat];
+            }
+
+            // Check affordability
+            if (remaining - price < 0) {
+                // Can't afford: restore previous selection if existed
+                if (prev) {
+                    selections[cat] = prev;
+                    remaining -= prev.price;
+                }
+                alert('Not enough budget for this part. Choose a cheaper part or replace another component first.');
+                updateUI();
+                return;
+            }
+
+            // Place new selection
+            selections[cat] = { name, price, ramtype, watt, img };
+            remaining -= price;
+
+            // Update drop-zone content with image and text
+            zone.innerHTML = `<img src="${img}" alt="${name}" /> ${name} — ₹${price.toLocaleString()}`;
+            updateUI();
+        });
+    });
+
+    function updateUI() {
+        // update summary list
+        summaryList.innerHTML = '';
+        let total = 0;
+        const order = ['Processor','RAM','GPU','Storage','PSU'];
+        order.forEach(cat => {
+            const li = document.createElement('li');
+            if (selections[cat]) {
+                li.textContent = `${cat}: ${selections[cat].name} — ₹${selections[cat].price.toLocaleString()}`;
+                total += selections[cat].price;
+            } else {
+                li.textContent = `${cat}: —`;
+            }
+            summaryList.appendChild(li);
+        });
+
+        spentEl.textContent = total.toLocaleString();
+        remainingEl.textContent = remaining.toLocaleString();
+        rem2.textContent = remaining.toLocaleString();
+
+        // progress
+        updateProgress();
+
+        // compatibility checks
+        let msgs = [];
+        // RAM type vs CPU
+        if (selections['Processor'] && selections['RAM']) {
+            const cpuRam = selections['Processor'].ramtype || null;
+            const ramType = selections['RAM'].ramtype || null;
+            if (cpuRam && ramType && cpuRam !== ramType) {
+                msgs.push({type:'warn', text:`RAM type mismatch: CPU expects ${cpuRam} but you picked ${ramType}.`});
+            } else {
+                msgs.push({type:'ok', text:`RAM & CPU type look compatible.`});
+            }
+        }
+
+        // PSU wattage check
+        const cpuW = (selections['Processor'] && selections['Processor'].watt) ? selections['Processor'].watt : 0;
+        const gpuW = (selections['GPU'] && selections['GPU'].watt) ? selections['GPU'].watt : 0;
+        const needed = cpuW + gpuW + 150; // +150W for rest (MB, drives, fans)
+        if (selections['PSU']) {
+            const psuW = selections['PSU'].watt || 0;
+            if (psuW < needed) {
+                msgs.push({type:'warn', text:`PSU likely underpowered. Estimated need ~${needed}W, your PSU: ${psuW}W.`});
+            } else {
+                msgs.push({type:'ok', text:`PSU wattage OK (Estimated need ${needed}W).`});
+            }
+        } else {
+            msgs.push({type:'warn', text:`No PSU selected yet.`});
+        }
+
+        // final message display
+        const warnMsgs = msgs.filter(m => m.type === 'warn').map(m => m.text);
+        const okMsgs = msgs.filter(m => m.type === 'ok').map(m => m.text);
+
+        if (warnMsgs.length) {
+            statusMsg.innerHTML = warnMsgs.map(t => `<div class="warn">⚠ ${t}</div>`).join('');
+        } else {
+            statusMsg.innerHTML = okMsgs.map(t => `<div class="ok">✔ ${t}</div>`).join('');
+        }
+
+        // judge feedback clears
+        judgeFeedback.textContent = 'Press Evaluate to get a quick scoring suggestion.';
+    }
+
+    function updateProgress() {
+        const used = budget - remaining;
+        const pct = Math.max(0, Math.min(100, Math.round(((budget - remaining) / budget) * 100)));
+        progressFill.style.width = `${100 - pct}%`;
+    }
+
+    // Twist: random budget cut (for stage drama)
+    document.getElementById('twistBtn').addEventListener('click', () => {
+        const cuts = [5000, 7000, 10000, 15000, 0];
+        const pick = cuts[Math.floor(Math.random() * cuts.length)];
+        if (pick === 0) {
+            alert('Lucky! No budget cut this time.');
+            return;
+        }
+        budget -= pick;
+        remaining = Math.max(0, remaining - pick);
+        document.getElementById('budget').textContent = budget.toLocaleString();
+        updateUI();
+        alert(`Twist! Budget reduced by ₹${pick.toLocaleString()}.`);
+    });
+
+    // Evaluate Build (simple scoring)
+    document.getElementById('evaluateBtn').addEventListener('click', () => {
+        let score = 0;
+        const required = ['Processor','RAM','Storage','PSU'];
+        let missing = required.filter(r => !selections[r]);
+        if (missing.length === 0) score += 40;
+        
+        let penalty = 0;
+        if (selections['Processor'] && selections['RAM'] && selections['Processor'].ramtype && selections['RAM'].ramtype && selections['Processor'].ramtype !== selections['RAM'].ramtype) {
+            penalty += 15;
+        }
+
+        const cpuW = (selections['Processor'] && selections['Processor'].watt) ? selections['Processor'].watt : 0;
+        const gpuW = (selections['GPU'] && selections['GPU'].watt) ? selections['GPU'].watt : 0;
+        const need = cpuW + gpuW + 150;
+        const psuW = (selections['PSU'] && selections['PSU'].watt) ? selections['PSU'].watt : 0;
+        if (psuW > 0) {
+            if (psuW >= need) score += 20;
+            else penalty += 10;
+        } else penalty += 20;
+
+        const spent = budget - remaining;
+        if (spent <= budget) {
+            const eff = Math.max(0, Math.min(15, Math.round((budget - spent) / budget * 100 / 3)));
+            score += eff;
+        } else {
+            penalty += 20;
+        }
+
+        if (selections['GPU'] && selections['Processor']) {
+            const g = selections['GPU'].price, c = selections['Processor'].price;
+            const ratio = Math.max(g/c, c/g);
+            if (ratio <= 2.0) score += 10;
+        }
+
+        score = Math.max(0, score - penalty);
+        judgeFeedback.innerHTML = `Score: <strong>${score}/100</strong> — ${missing.length ? 'Missing components: ' + missing.join(', ') : 'All mandatory components present.'}`;
+    });
+
+    // Export build as JSON file
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const out = {
+            budget, remaining, spent: budget - remaining, components: selections, timestamp: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(out, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pc_build.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    });
+
+    // Initialize UI
+    updateUI();
+
+    // Optional: keyboard shortcuts for demo
+    window.addEventListener('keydown', e => {
+        if (e.key === 'e') document.getElementById('evaluateBtn').click();
+    });
+</script>
+</body>
+</html>

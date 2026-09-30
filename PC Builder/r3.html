@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Round 3 – Troubleshooting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #0f172a;
+      color: #f1f5f9;
+      line-height: 1.6;
+      text-align: center;
+    }
+    header {
+      background: #1e293b;
+      padding: 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #38bdf8;
+    }
+    #game {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .options button {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #334155;
+      color: #f1f5f9;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .options button:hover {
+      background: #475569;
+    }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    #nextBtn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #22c55e;
+      color: #fff;
+      font-size: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛠 Round 3: Troubleshooting Challenge</h1>
+  </header>
+
+  <div id="game">
+    <div id="progress">Question 1 / 20</div>
+    <div id="questionBox" class="question"></div>
+    <div id="options" class="options"></div>
+    <div id="status"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <script>
+    // --- 20 Questions (answers hidden in code for staff only) ---
+    const questions = [
+      { q:"PC powers on, fans spin, but nothing shows on monitor.", options:["Loose RAM","Faulty PSU","Wrong cable","Bad SSD"], answer:"Loose RAM" },
+      { q:"System shuts down while gaming.", options:["Overheating GPU","Insufficient PSU","Faulty monitor","Slow HDD"], answer:"Insufficient PSU" },
+      { q:"Random freezes and restarts even when temps normal.", options:["Corrupt drivers","Bad RAM","Too much storage","No antivirus"], answer:"Bad RAM" },
+      { q:"Build won't POST; motherboard LED shows CPU error.", options:["Faulty CPU","Loose CPU power cable","Bad RAM","Old GPU"], answer:"Loose CPU power cable" },
+      { q:"Windows installer doesn't detect NVMe SSD.", options:["Loose SSD","Wrong SATA mode","Insufficient PSU","No internet"], answer:"Loose SSD" },
+      { q:"GPU artifacts while gaming (weird textures, lines).", options:["Overheating GPU","Faulty VRAM","Low RAM","Wrong refresh rate"], answer:"Faulty VRAM" },
+      { q:"High disk latency and low throughput despite SSD.", options:["TRIM disabled","Bad SATA cable","Overclocked CPU","Big monitor"], answer:"TRIM disabled" },
+      { q:"USB devices disconnect randomly.", options:["Faulty USB header","PSU sag","Loose SATA","Bad GPU"], answer:"Faulty USB header" },
+      { q:"System boots to BIOS but Windows fails with BSOD.", options:["Corrupt bootloader","Low RAM","Broken CPU fan","No boot device"], answer:"Corrupt bootloader" },
+      { q:"Temperatures spike; fans don't ramp up.", options:["Fan curve wrong","Dust clog","Faulty sensor","SSD failure"], answer:"Fan curve wrong" },
+      { q:"Bluetooth audio stutters but Wi-Fi is fine.", options:["2.4GHz interference","Bad PSU","Low RAM","Faulty SSD"], answer:"2.4GHz interference" },
+      { q:"New GPU causes POST VGA error.", options:["BIOS update needed","Dead GPU","Loose power cable","Old monitor"], answer:"BIOS update needed" },
+      { q:"PC beeps continuously on startup.", options:["RAM missing","Bad PSU","GPU dead","No SSD"], answer:"RAM missing" },
+      { q:"System boots very slow despite SSD.", options:["TRIM disabled","Faulty RAM","Old monitor","Wrong cable"], answer:"TRIM disabled" },
+      { q:"Monitor says 'No Signal' but GPU fans spin.", options:["Cable in motherboard port","Dead GPU","Wrong refresh rate","PSU fault"], answer:"Cable in motherboard port" },
+      { q:"PC overheats even after thermal paste applied.", options:["Cooler not mounted","Old GPU","Too much RAM","Slow SSD"], answer:"Cooler not mounted" },
+      { q:"Ethernet not working but Wi-Fi works.", options:["Disabled LAN driver","Bad PSU","Low RAM","SSD issue"], answer:"Disabled LAN driver" },
+      { q:"RGB lights on but no boot.", options:["Faulty motherboard","Faulty SSD","Bad GPU","Overheating"], answer:"Faulty motherboard" },
+      { q:"GPU fan 100% but no display.", options:["Not seated in PCIe","Low RAM","Faulty monitor","Bad PSU"], answer:"Not seated in PCIe" },
+      { q:"PC reboots when many USB devices connected.", options:["PSU overload","Bad RAM","SSD failure","Wrong driver"], answer:"PSU overload" }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById("questionBox").textContent = q.q;
+      document.getElementById("progress").textContent = `Question ${currentIndex+1} / ${questions.length}`;
+      const optDiv = document.getElementById("options");
+      optDiv.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        optDiv.appendChild(btn);
+      });
+      document.getElementById("status").textContent = "";
+      document.getElementById("nextBtn").style.display = "none";
+    }
+
+    function checkAnswer(choice) {
+      const q = questions[currentIndex];
+      if (choice === q.answer) {
+        score++;
+        document.getElementById("status").textContent = "✅ Correct!";
+      } else {
+        document.getElementById("status").textContent = "❌ Wrong!";
+      }
+      // disable buttons
+      Array.from(document.querySelectorAll(".options button")).forEach(b => b.disabled = true);
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex >= questions.length) {
+        document.getElementById("game").innerHTML = `<h2>🎉 Round Finished</h2>
+          <p>Your final score: <b>${score} / ${questions.length}</b></p>`;
+      } else {
+        loadQuestion();
+      }
+    }
+
+    // start
+    loadQuestion();
+  </script>
+</body>
+</html>

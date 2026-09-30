@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Round 3</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    color: #000000;
+    text-align: center;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: linear-gradient(90deg, #2563eb, #06b6d4);
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+}
+
+/* Full-page card */
+.card-custom {
+    background: #f8fafc;
+    border-radius: 2.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    margin: 0;
+    flex: 3;                  /* take remaining height */
+    width: 100%;              /* full width */
+    min-height: calc(100vh - 120px); /* header height adjust */
+    padding: 6rem 10rem;       /* reduce padding for balance */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* center vertically */
+}
+
+header h1 {
+    color: #fff;
+    font-size: 42px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+}
+
+
+/* Timer styled like button */
+#timer {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 12px;
+    background: #ffcc00;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Question text */
+#questionBox {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000; /* Black for clarity */
+    margin-bottom: 20px;
+}
+
+/* Options */
+.btn-custom {
+    border-radius: 10px;
+    font-size: 24px;
+    margin: 4px;
+    transition: transform 0.2s;
+    color: white;
+    background: #3b82f6;
+}
+.btn-custom:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+/* Status + Explanation */
+#status {
+    margin-top: 18px;
+    font-weight: 800;
+    font-size: 28px;
+    color: black;
+}
+@keyframes blink {
+    0%,50%,100% {opacity:1;}
+    25%,75% {opacity:0.5;}
+}
+#status.blink {
+    animation: blink 1s infinite;
+}
+#explanation {
+    font-size: 22px;
+    margin-top: 10px;
+    color: #111827;
+}
+#lotButtons button {
+    font-size: 26px;       /* bigger text */
+    padding: 20px 40px;    /* taller & wider buttons */
+    min-width: 160px;      /* consistent width */
+    min-height: 70px;      /* consistent height */
+    font-weight: bold;
+}
+
+</style>
+</head>
+<body>
+
+<header class="d-flex align-items-center justify-content-between">
+    <!-- Logo on the left -->
+    <div style="background:black; padding:8px; border-radius:6px;">
+        <img src="logo.png" alt="Logo" height="70">
+    </div>
+    <!-- Title centered -->
+    <h1 class="m-0 flex-grow-1 text-center">
+         Round 3: Troubleshooting Challenge
+    </h1>
+    <!-- Empty space on right (balances flexbox) -->
+    <div style="width:70px;"></div>
+</header>
+
+
+
+<div id="lotSelection" class="card card-custom">
+    <p class="lead text-center">
+    Select a lot and troubleshoot the PC issue.  
+    You have <span class="text-danger fw-bold">90 seconds</span> to solve the issue!
+  </p>
+    <div id="lotButtons" class="d-flex flex-wrap justify-content-center"></div>
+</div>
+
+<div id="game" class="card card-custom" style="display:none;">
+    <div id="timer" class="mb-3"></div>
+    <div id="questionBox" class="mb-3"></div>
+    <div id="options" class="d-grid gap-2"></div>
+    <div id="status" class="mt-3 fw-bold fs-5"></div>
+    <div id="explanation" class="fw-bold"></div>
+    <div class="mt-3">
+        <button id="showResultBtn" class="btn btn-warning btn-custom" onclick="showResult()">Show Result</button>
+    </div>
+    <button id="backBtn" class="btn btn-danger btn-custom mt-3" onclick="backToLot()">Back to Lot Selection</button>
+</div>
+
+<script>
+const questions = [
+    { q:"PC powers on, fans spin, but nothing shows on monitor.", options:["Loose RAM","Faulty PSU","Wrong cable","Bad SSD"], answer:"Loose RAM", explanation:"If RAM isn’t seated properly, the PC can’t show display." },
+    { q:"System shuts down while gaming.", options:["Overheating GPU","Insufficient PSU","Faulty monitor","Slow HDD"], answer:"Insufficient PSU", explanation:"PSU can’t handle high power draw, so it shuts down." },
+    { q:"Random freezes and restarts even when temps normal.", options:["Corrupt drivers","Bad RAM","Too much storage","No antivirus"], answer:"Bad RAM", explanation:"Faulty RAM causes system instability." },
+    { q:"Build won't POST; motherboard LED shows CPU error.", options:["Faulty CPU","Loose CPU power cable","Bad RAM","Old GPU"], answer:"Loose CPU power cable", explanation:"Without proper CPU power, the board won’t start." },
+    { q:"Windows installer doesn't detect NVMe SSD.", options:["Loose SSD","Wrong SATA mode","Insufficient PSU","No internet"], answer:"Loose SSD", explanation:"NVMe not fully seated won’t be detected." },
+    { q:"GPU artifacts while gaming (weird textures, lines).", options:["Overheating GPU","Faulty VRAM","Low RAM","Wrong refresh rate"], answer:"Faulty VRAM", explanation:"Bad GPU memory shows visual glitches." },
+    { q:"High disk latency and low throughput despite SSD.", options:["TRIM disabled","Bad SATA cable","Overclocked CPU","Big monitor"], answer:"TRIM disabled", explanation:"Without TRIM, SSD slows down over time." },
+    { q:"USB devices disconnect randomly.", options:["Faulty USB header","PSU sag","Loose SATA","Bad GPU"], answer:"Faulty USB header", explanation:"Damaged or loose header interrupts connections." },
+    { q:"System boots to BIOS but Windows fails with BSOD.", options:["Corrupt bootloader","Low RAM","Broken CPU fan","No boot device"], answer:"Corrupt bootloader", explanation:"Boot files are broken, so Windows won’t load." },
+    { q:"Temperatures spike; fans don't ramp up.", options:["Fan curve wrong","Dust clog","Faulty sensor","SSD failure"], answer:"Fan curve wrong", explanation:"Improper fan settings stop cooling response." },
+    { q:"Bluetooth audio stutters but Wi-Fi is fine.", options:["2.4GHz interference","Bad PSU","Low RAM","Faulty SSD"], answer:"2.4GHz interference", explanation:"Bluetooth and 2.4GHz Wi-Fi signals clash." },
+    { q:"New GPU causes POST VGA error.", options:["BIOS update needed","Dead GPU","Loose power cable","Old monitor"], answer:"BIOS update needed", explanation:"Old BIOS may not support the new GPU." },
+    { q:"PC beeps continuously on startup.", options:["RAM missing","Bad PSU","GPU dead","No SSD"], answer:"RAM missing", explanation:"POST beeps indicate no RAM detected." },
+    { q:"System boots very slow despite SSD.", options:["TRIM disabled","Faulty RAM","Old monitor","Wrong cable"], answer:"TRIM disabled", explanation:"SSD slows if TRIM isn’t enabled." },
+    { q:"Monitor says 'No Signal' but GPU fans spin.", options:["Cable in motherboard port","Dead GPU","Wrong refresh rate","PSU fault"], answer:"Cable in motherboard port", explanation:"Display cable must be in GPU, not motherboard." },
+    { q:"PC overheats even after thermal paste applied.", options:["Cooler not mounted","Old GPU","Too much RAM","Slow SSD"], answer:"Cooler not mounted", explanation:"No proper contact between CPU and cooler." },
+    { q:"Ethernet not working but Wi-Fi works.", options:["Disabled LAN driver","Bad PSU","Low RAM","SSD issue"], answer:"Disabled LAN driver", explanation:"Ethernet won’t work if driver is off/disabled." },
+    { q:"RGB lights on but no boot.", options:["Faulty motherboard","Faulty SSD","Bad GPU","Overheating"], answer:"Faulty motherboard", explanation:"LEDs can glow, but board may still be dead." },
+    { q:"GPU fan 100% but no display.", options:["Not seated in PCIe","Low RAM","Faulty monitor","Bad PSU"], answer:"Not seated in PCIe", explanation:"GPU must be firmly locked into PCIe slot." },
+    { q:"PC reboots when many USB devices connected.", options:["PSU overload","Bad RAM","SSD failure","Wrong driver"], answer:"PSU overload", explanation:"Too many USB devices can draw more power than PSU provides." }
+];
+
+let currentIndex=0, selectedChoice=null, lastSelectedLot=null;
+const questionsPerLot=1, timeLimit=90;
+let timeLeft=timeLimit, timer;
+
+const lotButtonsDiv=document.getElementById("lotButtons");
+for(let i=1;i<=20;i++){
+    const btn=document.createElement("button");
+    btn.textContent="Lot "+i;
+    btn.className="btn btn-primary btn-custom m-1";
+    btn.onclick=()=>startLot(i,btn);
+    lotButtonsDiv.appendChild(btn);
+}
+
+function startLot(lotNumber,btn){
+    if(btn.disabled) return;
+    if(lastSelectedLot) lastSelectedLot.classList.replace("btn-success","btn-secondary");
+    btn.classList.replace("btn-primary","btn-success");
+    btn.disabled=true;
+    lastSelectedLot=btn;
+    currentIndex=(lotNumber-1)*questionsPerLot;
+    document.getElementById("lotSelection").style.display="none";
+    document.getElementById("game").style.display="block";
+    loadQuestion();
+}
+
+function loadQuestion(){
+    const q=questions[currentIndex];
+    document.getElementById("questionBox").textContent=q.q;
+    document.getElementById("options").innerHTML="";
+    q.options.forEach(opt=>{
+        const btn=document.createElement("button");
+        btn.textContent=opt;
+        btn.className="btn btn-custom";
+        btn.onclick=()=>checkAnswer(opt,btn);
+        document.getElementById("options").appendChild(btn);
+    });
+    document.getElementById("status").textContent="🗣 Explain your answer to staff before revealing result!";
+    document.getElementById("status").classList.add("blink");
+    document.getElementById("explanation").textContent="";
+    document.getElementById("showResultBtn").style.display="none";
+
+    clearInterval(timer);
+    timeLeft=timeLimit;
+    document.getElementById("timer").textContent=`⏱ ${timeLeft}s`;
+    timer=setInterval(()=>{
+        timeLeft--;
+        document.getElementById("timer").textContent=`⏱ ${timeLeft}s`;
+        if(timeLeft<=0){
+            clearInterval(timer);
+            revealCorrectAnswer();
+        }
+    },1000);
+}
+
+function checkAnswer(choice,btn){
+    selectedChoice=choice;
+    const optButtons=document.querySelectorAll("#options button");
+    optButtons.forEach(b=>b.disabled=true);
+    btn.style.background="#ef4444"; // red
+    btn.style.color="white";
+    document.getElementById("showResultBtn").style.display="inline-block";
+    document.getElementById("status").classList.add("blink");
+    // timer continues running
+}
+
+function showResult(){
+    const q=questions[currentIndex];
+    const optButtons=document.querySelectorAll("#options button");
+    optButtons.forEach(b=>{
+        if(b.textContent===q.answer){
+            b.style.background="#22c55e"; // green
+            b.style.color="white";
+        } else if(b.textContent===selectedChoice){
+            b.style.background="#ef4444"; // red
+            b.style.color="white";
+        }
+    });
+    const statusEl=document.getElementById("status");
+    if(selectedChoice===q.answer){
+        statusEl.textContent="✅ Correct!";
+    } else {
+        statusEl.textContent=`❌ Wrong! Correct answer: ${q.answer}`;
+    }
+    statusEl.classList.remove("blink");
+    document.getElementById("explanation").textContent="👉 " + q.explanation;
+    document.getElementById("showResultBtn").style.display="none";
+    clearInterval(timer); // stop timer when result shown
+}
+
+function backToLot(){
+    document.getElementById("game").style.display="none";
+    document.getElementById("lotSelection").style.display="block";
+    clearInterval(timer);
+}
+
+function revealCorrectAnswer(){
+    const q=questions[currentIndex];
+    const statusEl=document.getElementById("status");
+    statusEl.textContent=`⏱ Time's up! Correct answer: ${q.answer}`;
+    statusEl.classList.remove("blink");
+    document.getElementById("explanation").textContent="👉 " + q.explanation;
+    const optButtons=document.querySelectorAll("#options button");
+    optButtons.forEach(b=>{
+        if(b.textContent===q.answer){
+            b.style.background="#22c55e";
+            b.style.color="white";
+        } else {
+            b.style.background="#ef4444";
+            b.style.color="white";
+        }
+        b.disabled=true;
+    });
+    clearInterval(timer);
+}
+</script>
+</body>
+</html>

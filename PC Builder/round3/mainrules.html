@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Builder Challenge</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #222;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Fixed background image */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0%; left: 0;
+    width: 100%; height: 100%;
+    background: url('background2.png') no-repeat center center/cover;
+    z-index: -2;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); /* 50% dark overlay */
+    z-index: -1;
+  }
+
+  header {
+    text-align: center;
+    padding: 30px;
+    background-color: rgba(30,30,30,0.85);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1;
+  }
+  header h1 {
+    font-size: 40px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    margin-bottom: 15px;
+  }
+
+  .btn-group {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .btn-group button {
+    margin: 5px;
+  }
+
+  /* Rules & Rounds with semi-transparent background */
+  .rules-box, .round-box {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    background: rgba(255, 255, 255, 0.85); /* semi-transparent */
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1;
+  }
+  .rules-box.show, .round-box.show {
+    display: block;
+    opacity: 1;
+  }
+
+  .rules-box h2, .round-box h2 {
+    color: #0d6efd;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  ol {
+    line-height: 1.6;
+  }
+
+  .time {
+    font-weight: bold;
+    color: #d63384;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+
+  .highlight {
+    color: #0d6efd;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+ 
+  <img src="logo.png" alt="Logo" height="70">
+</header>
+
+<div class="btn-group">
+  <button class="btn btn-success" onclick="showRules()">Rules</button>
+  <button class="btn btn-primary" onclick="showRound('round1')">Round 1</button>
+  <button class="btn btn-primary" onclick="showRound('round2')">Round 2</button>
+  <button class="btn btn-primary" onclick="showRound('round3')">Round 3</button>
+</div>
+
+
+<!-- Rules -->
+<div id="rules" class="rules-box show">
+  <h2>General Rules for Participants</h2>
+  <ol>
+    <li>Each participant must register <b>before the event</b> to be eligible.</li>
+    <li>Select components carefully, ensuring they fit <b>within the given budget</b>.</li>
+    <li>Ensure <b>compatibility</b> between all selected parts (CPU, motherboard, RAM, GPU, storage, PSU, etc.).</li>
+    <li>The final build must be <b>submitted before the deadline</b> to be considered for scoring.</li>
+    <li>Points will be awarded based on <b>accuracy, compatibility, and adherence to the budget</b>.</li>
+    <li>Participants are responsible for checking their selections; mistakes may result in <b>point deductions</b>.</li>
+    <li>Follow all instructions provided by the organizers during the event.</li>
+  </ol>
+</div>
+
+<!-- Round 1 -->
+<div id="round1" class="round-box">
+  <h2>Round 1: Drag & Drop <span class="time">(50 seconds)</span></h2>
+  <ol>
+    <li>A virtual PC image will be shown with empty slots.</li>
+    <li>Drag and drop the correct components (<span class="highlight">CPU, RAM, GPU, Storage, PSU</span>, etc.) to the right place.</li>
+    <li>You have <span class="time">50 seconds</span> to complete this task.</li>
+    <li>Each correct placement earns <span class="highlight">10 points</span>.</li>
+    <li>Bonus points for completing all placements correctly before time ends.</li>
+    <li>Submit before the timer ends to secure your score.</li>
+  </ol>
+</div>
+
+<!-- Round 2 -->
+<div id="round2" class="round-box">
+  <h2>Round 2: Matching Budget <span class="time">(50 seconds)</span></h2>
+  <ol>
+    <li>You will be given a fixed budget (<span class="highlight">₹1,00,000</span>).</li>
+    <li>Select compatible components for either <span class="highlight">Normal, Gaming, or Workstation</span> builds.</li>
+    <li>Stay within the budget and ensure performance + compatibility.</li>
+    <li>You have <span class="time">50 seconds</span> to finalize your build.</li>
+    <li>Overspending beyond the budget will not be considered valid.</li>
+    <li>Scoring is based on compatibility, performance fit, and cost efficiency.</li>
+  </ol>
+</div>
+
+<!-- Round 3 -->
+<div id="round3" class="round-box">
+  <h2>Round 3: Troubleshooting <span class="time">(90 seconds)</span></h2>
+  <ol>
+    <li>You will be given <span class="highlight">3 problem scenarios</span> (boot errors, overheating, no display, lag, etc.).</li>
+    <li>For each scenario, choose the correct solution from the options provided.</li>
+    <li>After choosing, explain <b>why you selected that answer</b> and justify it clearly.</li>
+    <li>You have <span class="time">90 seconds</span> total for all scenarios.</li>
+    <li>Scores are based on accuracy, explanation clarity, and correct troubleshooting steps.</li>
+    <li>The judges’ decision will be final.</li>
+  </ol>
+</div>
+
+<script>
+function showRules() {
+  document.getElementById('rules').classList.add('show');
+  document.querySelectorAll('.round-box').forEach(box => box.classList.remove('show'));
+}
+
+function showRound(id) {
+  document.getElementById('rules').classList.remove('show');
+  document.querySelectorAll('.round-box').forEach(box => box.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
+
+// Show rules automatically on page load
+window.onload = function() {
+  showRules();
+};
+</script>
+
+</body>
+</html>

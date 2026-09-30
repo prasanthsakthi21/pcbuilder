@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Builder Drag & Drop</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .components, .build-area {
+      background: #111827;
+      border-radius: 12px;
+      padding: 20px;
+      width: 45%;
+      min-height: 300px;
+    }
+    .components h2, .build-area h2 {
+      margin-bottom: 15px;
+    }
+    .part {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+      cursor: grab;
+    }
+    .part img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      background: #fff;
+      padding: 5px;
+    }
+    .part span {
+      display: block;
+      margin-top: 5px;
+      font-size: 13px;
+    }
+    .build-slot {
+      border: 2px dashed #38bdf8;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 10px;
+      min-height: 120px;
+    }
+    .build-slot img {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PC Builder — Drag & Drop</h1>
+  <div class="container">
+    <div class="components">
+      <h2>Available Parts</h2>
+
+      <!-- CPUs -->
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU1"><span>Intel i5</span>
+      </div>
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU2"><span>Intel i7</span>
+      </div>
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU3"><span>Intel i9</span>
+      </div>
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU4"><span>Ryzen 5</span>
+      </div>
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU5"><span>Ryzen 7</span>
+      </div>
+      <div class="part" draggable="true" data-type="CPU">
+        <img src="https://img.icons8.com/color/100/cpu.png" alt="CPU6"><span>Ryzen 9</span>
+      </div>
+
+      <!-- GPUs -->
+      <div class="part" draggable="true" data-type="GPU">
+        <img src="https://img.icons8.com/color/100/graphics-card.png" alt="GPU1"><span>NVIDIA 3060</span>
+      </div>
+      <div class="part" draggable="true" data-type="GPU">
+        <img src="https://img.icons8.com/color/100/graphics-card.png" alt="GPU2"><span>NVIDIA 3070</span>
+      </div>
+      <div class="part" draggable="true" data-type="GPU">
+        <img src="https://img.icons8.com/color/100/graphics-card.png" alt="GPU3"><span>NVIDIA 3080</span>
+      </div>
+      <div class="part" draggable="true" data-type="GPU">
+        <img src="https://img.icons8.com/color/100/graphics-card.png" alt="GPU4"><span>RTX 4090</span>
+      </div>
+      <div class="part" draggable="true" data-type="GPU">
+        <img src="https://img.icons8.com/color/100/graphics-card.png" alt="GPU5"><span>AMD RX 6800</span>
+      </div>
+
+      <!-- RAM -->
+      <div class="part" draggable="true" data-type="RAM">
+        <img src="https://img.icons8.com/color/100/ram.png" alt="RAM1"><span>8GB DDR4</span>
+      </div>
+      <div class="part" draggable="true" data-type="RAM">
+        <img src="https://img.icons8.com/color/100/ram.png" alt="RAM2"><span>16GB DDR4</span>
+      </div>
+      <div class="part" draggable="true" data-type="RAM">
+        <img src="https://img.icons8.com/color/100/ram.png" alt="RAM3"><span>32GB DDR4</span>
+      </div>
+      <div class="part" draggable="true" data-type="RAM">
+        <img src="https://img.icons8.com/color/100/ram.png" alt="RAM4"><span>16GB DDR5</span>
+      </div>
+      <div class="part" draggable="true" data-type="RAM">
+        <img src="https://img.icons8.com/color/100/ram.png" alt="RAM5"><span>32GB DDR5</span>
+      </div>
+
+      <!-- Storage -->
+      <div class="part" draggable="true" data-type="Storage">
+        <img src="https://img.icons8.com/color/100/hdd.png" alt="HDD1"><span>1TB HDD</span>
+      </div>
+      <div class="part" draggable="true" data-type="Storage">
+        <img src="https://img.icons8.com/color/100/hdd.png" alt="SSD1"><span>256GB SSD</span>
+      </div>
+      <div class="part" draggable="true" data-type="Storage">
+        <img src="https://img.icons8.com/color/100/hdd.png" alt="SSD2"><span>512GB SSD</span>
+      </div>
+      <div class="part" draggable="true" data-type="Storage">
+        <img src="https://img.icons8.com/color/100/hdd.png" alt="SSD3"><span>1TB SSD</span>
+      </div>
+      <div class="part" draggable="true" data-type="Storage">
+        <img src="https://img.icons8.com/color/100/hdd.png" alt="SSD4"><span>2TB SSD</span>
+      </div>
+
+      <!-- Motherboard -->
+      <div class="part" draggable="true" data-type="Motherboard">
+        <img src="https://img.icons8.com/color/100/motherboard.png" alt="MB1"><span>ATX Intel</span>
+      </div>
+      <div class="part" draggable="true" data-type="Motherboard">
+        <img src="https://img.icons8.com/color/100/motherboard.png" alt="MB2"><span>ATX AMD</span>
+      </div>
+      <div class="part" draggable="true" data-type="Motherboard">
+        <img src="https://img.icons8.com/color/100/motherboard.png" alt="MB3"><span>Micro ATX</span>
+      </div>
+      <div class="part" draggable="true" data-type="Motherboard">
+        <img src="https://img.icons8.com/color/100/motherboard.png" alt="MB4"><span>Mini ITX</span>
+      </div>
+      <div class="part" draggable="true" data-type="Motherboard">
+        <img src="https://img.icons8.com/color/100/motherboard.png" alt="MB5"><span>Server Board</span>
+      </div>
+
+      <!-- PSU -->
+      <div class="part" draggable="true" data-type="PSU">
+        <img src="https://img.icons8.com/color/100/power-supply.png" alt="PSU1"><span>500W</span>
+      </div>
+      <div class="part" draggable="true" data-type="PSU">
+        <img src="https://img.icons8.com/color/100/power-supply.png" alt="PSU2"><span>650W</span>
+      </div>
+      <div class="part" draggable="true" data-type="PSU">
+        <img src="https://img.icons8.com/color/100/power-supply.png" alt="PSU3"><span>750W</span>
+      </div>
+      <div class="part" draggable="true" data-type="PSU">
+        <img src="https://img.icons8.com/color/100/power-supply.png" alt="PSU4"><span>850W</span>
+      </div>
+      <div class="part" draggable="true" data-type="PSU">
+        <img src="https://img.icons8.com/color/100/power-supply.png" alt="PSU5"><span>1000W</span>
+      </div>
+
+      <!-- Case -->
+      <div class="part" draggable="true" data-type="Case">
+        <img src="https://img.icons8.com/color/100/computer-case.png" alt="Case1"><span>ATX Tower</span>
+      </div>
+      <div class="part" draggable="true" data-type="Case">
+        <img src="https://img.icons8.com/color/100/computer-case.png" alt="Case2"><span>Micro ATX</span>
+      </div>
+      <div class="part" draggable="true" data-type="Case">
+        <img src="https://img.icons8.com/color/100/computer-case.png" alt="Case3"><span>Mini ITX</span>
+      </div>
+      <div class="part" draggable="true" data-type="Case">
+        <img src="https://img.icons8.com/color/100/computer-case.png" alt="Case4"><span>RGB Tower</span>
+      </div>
+      <div class="part" draggable="true" data-type="Case">
+        <img src="https://img.icons8.com/color/100/computer-case.png" alt="Case5"><span>Compact Case</span>
+      </div>
+
+      <!-- Cooling -->
+      <div class="part" draggable="true" data-type="Cooling">
+        <img src="https://img.icons8.com/color/100/fan.png" alt="Fan1"><span>Air Cooler</span>
+      </div>
+      <div class="part" draggable="true" data-type="Cooling">
+        <img src="https://img.icons8.com/color/100/fan.png" alt="Fan2"><span>Liquid Cooler</span>
+      </div>
+      <div class="part" draggable="true" data-type="Cooling">
+        <img src="https://img.icons8.com/color/100/fan.png" alt="Fan3"><span>120mm Fan</span>
+      </div>
+      <div class="part" draggable="true" data-type="Cooling">
+        <img src="https://img.icons8.com/color/100/fan.png" alt="Fan4"><span>240mm AIO</span>
+      </div>
+      <div class="part" draggable="true" data-type="Cooling">
+        <img src="https://img.icons8.com/color/100/fan.png" alt="Fan5"><span>360mm AIO</span>
+      </div>
+    </div>
+
+    <div class="build-area">
+      <h2>Build Area</h2>
+      <div class="build-slot" data-slot="CPU">Drop CPU here</div>
+      <div class="build-slot" data-slot="GPU">Drop GPU here</div>
+      <div class="build-slot" data-slot="RAM">Drop RAM here</div>
+      <div class="build-slot" data-slot="Storage">Drop Storage here</div>
+      <div class="build-slot" data-slot="Motherboard">Drop Motherboard here</div>
+      <div class="build-slot" data-slot="PSU">Drop Power Supply here</div>
+      <div class="build-slot" data-slot="Case">Drop Case here</div>
+      <div class="build-slot" data-slot="Cooling">Drop Cooling here</div>
+    </div>
+  </div>
+
+  <script>
+    const parts = document.querySelectorAll(".part");
+    const slots = document.querySelectorAll(".build-slot");
+
+    parts.forEach(part => {
+      part.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("type", part.dataset.type);
+        e.dataTransfer.setData("html", part.innerHTML);
+      });
+    });
+
+    slots.forEach(slot => {
+      slot.addEventListener("dragover", e => e.preventDefault());
+
+      slot.addEventListener("drop", e => {
+        e.preventDefault();
+        const type = e.dataTransfer.getData("type");
+        const html = e.dataTransfer.getData("html");
+        if (slot.dataset.slot === type) {
+          slot.innerHTML = html;
+        } else {
+          alert("Wrong slot! Place in the correct area.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

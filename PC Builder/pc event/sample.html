@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Builder Drag & Drop</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #1e293b;
+    }
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      color: #38bdf8;
+    }
+    .rules-box {
+      background: #1e293b;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .budget-box {
+      text-align: center;
+      padding: 15px;
+      font-size: 18px;
+      background: #1e293b;
+      margin-bottom: 20px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+    .part-category {
+      flex: 1 1 45%;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .part-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .part {
+      width: 120px;
+      height: 120px;
+      border: 2px solid #475569;
+      border-radius: 8px;
+      cursor: grab;
+      object-fit: cover;
+    }
+    .drop-zone {
+      margin-top: 12px;
+      padding: 20px;
+      border: 2px dashed #94a3b8;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 50px;
+    }
+    .drop-zone.hover {
+      border-color: #38bdf8;
+      background: #0ea5e9;
+      color: #fff;
+    }
+    #summary {
+      margin: 20px;
+      padding: 15px;
+      background: #1e293b;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>💻 Virtual PC Builder Event</h1>
+  <p>Drag and drop components to build your PC within the budget!</p>
+</header>
+
+<div class="rules-box">
+  <h3>📌 Event Rules</h3>
+  <ul>
+    <li>Each participant must build a complete PC with 1 Processor, 1 RAM, 1 GPU, 1 Storage, and 1 Power Supply.</li>
+    <li>You cannot pick more than one component from the same category.</li>
+    <li>The total cost must not exceed ₹1,50,000.</li>
+    <li>Points are awarded for performance + cost-effectiveness of the build.</li>
+  </ul>
+</div>
+
+<div class="budget-box">
+  Budget: ₹<span id="budget">150000</span> | Remaining: ₹<span id="remaining">150000</span>
+</div>
+
+<div class="container">
+
+  <!-- Processor -->
+  <div class="part-category">
+    <h3>Processor</h3>
+    <div class="part-list">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Intel_Core_i3_logo_2020.png" class="part" draggable="true" data-name="Intel i3 12100" data-price="9000">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Intel_Core_i5_logo_2020.png" class="part" draggable="true" data-name="Intel i5 10400" data-price="12000">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Intel_Core_i7_logo_2020.png" class="part" draggable="true" data-name="Intel i7 12700" data-price="25000">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/AMD_Ryzen_3_logo.png" class="part" draggable="true" data-name="Ryzen 3 4100" data-price="8000">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/AMD_Ryzen_5_logo.png" class="part" draggable="true" data-name="Ryzen 5 5600X" data-price="18000">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/AMD_Ryzen_7_logo.png" class="part" draggable="true" data-name="Ryzen 7 5800X" data-price="28000">
+    </div>
+    <div class="drop-zone" id="Processor">Drop your processor here</div>
+  </div>
+
+  <!-- RAM -->
+  <div class="part-category">
+    <h3>RAM</h3>
+    <div class="part-list">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/memory/ddr4/images/ddr4-dimm-udimm-product-detail.png" class="part" draggable="true" data-name="8GB DDR4 2666MHz" data-price="2500">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/memory/ddr4/images/ddr4-dimm-udimm-product-detail.png" class="part" draggable="true" data-name="16GB DDR4 3200MHz" data-price="5000">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/memory/ddr5/images/ddr5-udimm-udimm-product-detail.png" class="part" draggable="true" data-name="32GB DDR5 5600MHz" data-price="12000">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/memory/ddr5/images/ddr5-udimm-udimm-product-detail.png" class="part" draggable="true" data-name="64GB DDR5 6000MHz" data-price="24000">
+    </div>
+    <div class="drop-zone" id="RAM">Drop your RAM here</div>
+  </div>
+
+  <!-- GPU -->
+  <div class="part-category">
+    <h3>Graphics Card</h3>
+    <div class="part-list">
+      <img src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4060/graphics-cards/geforce-rtx-4060-2c50.png" class="part" draggable="true" data-name="NVIDIA RTX 4060" data-price="30000">
+      <img src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4060ti/graphics-cards/geforce-rtx-4060-ti-2c50.png" class="part" draggable="true" data-name="NVIDIA RTX 4060 Ti" data-price="45000">
+      <img src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4070/graphics-cards/geforce-rtx-4070-2c50.png" class="part" draggable="true" data-name="NVIDIA RTX 4070" data-price="55000">
+      <img src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4070ti/graphics-cards/geforce-rtx-4070-ti-2c50.png" class="part" draggable="true" data-name="NVIDIA RTX 4070 Ti" data-price="65000">
+    </div>
+    <div class="drop-zone" id="GPU">Drop your GPU here</div>
+  </div>
+
+  <!-- Storage -->
+  <div class="part-category">
+    <h3>Storage</h3>
+    <div class="part-list">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/ssd/mx500/images/product/crucial-mx500-2-5inch-ssd-product-detail.png" class="part" draggable="true" data-name="240GB SSD" data-price="2500">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/ssd/mx500/images/product/crucial-mx500-2-5inch-ssd-product-detail.png" class="part" draggable="true" data-name="500GB SSD" data-price="4000">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/ssd/p3plus/images/crucial-p3-plus-nvme-ssd-product-detail.png" class="part" draggable="true" data-name="1TB NVMe SSD" data-price="8000">
+      <img src="https://www.crucial.in/content/dam/crucial/global/products/ssd/p3plus/images/crucial-p3-plus-nvme-ssd-product-detail.png" class="part" draggable="true" data-name="2TB NVMe SSD" data-price="14000">
+    </div>
+    <div class="drop-zone" id="Storage">Drop your storage here</div>
+  </div>
+
+  <!-- PSU -->
+  <div class="part-category">
+    <h3>Power Supply</h3>
+    <div class="part-list">
+      <img src="https://www.corsair.com/medias/sys_master/images/images/h95/h6f/9245559496734/-CP-9020225-NA-Gallery-CX550-01.png" class="part" draggable="true" data-name="550W Bronze PSU" data-price="4000">
+      <img src="https://www.corsair.com/medias/sys_master/images/images/h95/h6f/9245559496734/-CP-9020225-NA-Gallery-CX550-01.png" class="part" draggable="true" data-name="650W Gold PSU" data-price="7000">
+      <img src="https://www.corsair.com/medias/sys_master/images/images/h95/h6f/9245559496734/-CP-9020225-NA-Gallery-CX550-01.png" class="part" draggable="true" data-name="750W Gold PSU" data-price="9000">
+    </div>
+    <div class="drop-zone" id="PSU">Drop your PSU here</div>
+  </div>
+
+</div>
+
+<div id="summary">
+  <h2>Build Summary</h2>
+  <ul id="summary-list"></ul>
+</div>
+
+<script>
+  let budget = 150000; // updated budget
+  let remaining = budget;
+  let selections = {};
+
+  const remainingEl = document.getElementById("remaining");
+  const summaryList = document.getElementById("summary-list");
+
+  document.querySelectorAll(".drop-zone").forEach(zone => {
+    zone.addEventListener("dragover", e => {
+      e.preventDefault();
+      zone.classList.add("hover");
+    });
+    zone.addEventListener("dragleave", () => zone.classList.remove("hover"));
+    zone.addEventListener("drop", e => {
+      e.preventDefault();
+      zone.classList.remove("hover");
+      const name = e.dataTransfer.getData("name");
+      const price = parseInt(e.dataTransfer.getData("price"));
+      const category = zone.id;
+
+      // If replacing, refund old price
+      if (selections[category]) {
+        remaining += selections[category].price;
+      }
+
+      // Only one component per category
+      selections[category] = { name, price };
+      remaining -= price;
+
+      zone.textContent = `${name} (₹${price})`;
+      updateSummary();
+    });
+  });
+
+  document.querySelectorAll(".part").forEach(img => {
+    img.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("name", img.dataset.name);
+      e.dataTransfer.setData("price", img.dataset.price);
+    });
+  });
+
+  function updateSummary() {
+    remainingEl.textContent = remaining;
+    summaryList.innerHTML = "";
+    for (let cat in selections) {
+      let li = document.createElement("li");
+      li.textContent = `${cat}: ${selections[cat].name} — ₹${selections[cat].price}`;
+      summaryList.appendChild(li);
+    }
+    let total = budget - remaining;
+    let li = document.createElement("li");
+    li.innerHTML = `<strong>Total Spent:</strong> ₹${total} | <strong>Remaining:</strong> ₹${remaining}`;
+    summaryList.appendChild(li);
+  }
+</script>
+
+</body>
+</html>

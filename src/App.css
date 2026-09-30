@@ -1,0 +1,80 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.parts-panel {
+  width: 200px;
+  border: 2px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.part-item {
+  text-align: center;
+  margin: 10px 0;
+  cursor: grab;
+}
+
+.part-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.motherboard-panel {
+  flex: 1;
+  text-align: center;
+}
+
+.motherboard-container {
+  position: relative;
+  display: inline-block;
+}
+
+.motherboard {
+  width: 600px;
+  border: 2px solid #333;
+  border-radius: 8px;
+}
+
+/* === Drop Slots === */
+.slot {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.slot:hover {
+  background-color: rgba(0, 123, 255, 0.3);
+}
+
+.placed-part {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Button */
+.submit-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
